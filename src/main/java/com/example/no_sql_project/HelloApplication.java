@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ public class HelloApplication extends Application {
         stage.show();
         //BaseDAO mongoDB = new BaseDAO();
         EmployeeDAO test = new EmployeeDAO();
-        System.out.println(test.test());
+        System.out.println(test.findEmplyeeByID(new ObjectId("66fa672e0b885326bc77c6a9")));
 
     }
 

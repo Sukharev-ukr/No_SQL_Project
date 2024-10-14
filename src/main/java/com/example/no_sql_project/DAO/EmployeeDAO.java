@@ -5,6 +5,7 @@ import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class EmployeeDAO extends BaseDAO {
 
@@ -16,25 +17,9 @@ public class EmployeeDAO extends BaseDAO {
      * @return Document containing the employee data, or null if not found
      */
 
-    public Document test (){
-        return findQuery(COLLECTION_NAME);
+    public Document findEmplyeeByID (ObjectId id) {
+        Document document = new Document("_id", id);
+        return findQuery(COLLECTION_NAME,document);
 
     }
-//    public Document findEmployeeByName(String name) {
-//        // Use the inherited method to open the connection and get the database
-//
-//        MongoCollection<Document> collection = db.getCollection(COLLECTION_NAME);
-//
-//        try {
-//            // Perform the search by name
-//            Document employee = collection.find(eq("Name", name)).first();
-//            return employee;  // Return the found document
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;  // Return null in case of an exception
-//        } finally {
-//            // Optionally, close the client if not needed anymore
-//            closeConnection();
-//        }
-//    }
 }

@@ -19,22 +19,34 @@ public abstract class BaseDAO {
     protected MongoClient getClient() throws MongoException {
         MongoClient mongoClient = new MongoClient(new MongoClientURI(CONNECTION_STRING));
         return mongoClient;
-    }
+    };
 
-    ;
-
-
-    protected Document findQuery(String selectedCollection) {
+    protected void createEntry(String targetCollection, Document query)
+    {
         try {
             //open conncetion
             MongoClient mongoClient = getClient();
             MongoDatabase db = mongoClient.getDatabase(DATABASE);
-            MongoCollection<Document> collection = db.getCollection(selectedCollection);
+            MongoCollection<Document> collection = db.getCollection(targetCollection);
+
+            //execute queryString targetCollection, Document query
+            collection.insertOne((query));
+            //close connection to the database
+            mongoClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected Document findQuery(String targetCollection, Document query){
+        try {
+            //open conncetion
+            MongoClient mongoClient = getClient();
+            MongoDatabase db = mongoClient.getDatabase(DATABASE);
+            MongoCollection<Document> collection = db.getCollection(targetCollection);
 
             //execute query
-
-            Document document = collection.find(eq("Name", "Douglas Robinson")).first();
-
+            Document document = collection.find((query)).first();
             //close connection to the database
             mongoClient.close();
 
@@ -44,6 +56,48 @@ public abstract class BaseDAO {
         }
         return null;
     }
+
+    protected void updateOneEntry(String targetCollection, Document target, Document update)
+    {
+        try {
+            //open conncetion
+            MongoClient mongoClient = getClient();
+            MongoDatabase db = mongoClient.getDatabase(DATABASE);
+            MongoCollection<Document> collection = db.getCollection(targetCollection);
+
+            //execute query
+            collection.updateOne(target,update);
+
+            //close connection to the database
+            mongoClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void deleteOneQuery(String targetCollection, Document query)
+    {
+        try {
+            //open conncetion
+            MongoClient mongoClient = getClient();
+            MongoDatabase db = mongoClient.getDatabase(DATABASE);
+            MongoCollection<Document> collection = db.getCollection(targetCollection);
+
+            //execute query
+            collection.deleteOne((query));
+            //close connection to the database
+            mongoClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    protected Document executeAggregation()
+    {
+//        TODO: look in to list<BJSON> for aggrigation pipline queries
+        return null;
+    };
 
     //Select Query
     /*
