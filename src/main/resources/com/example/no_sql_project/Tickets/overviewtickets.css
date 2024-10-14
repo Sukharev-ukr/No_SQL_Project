@@ -1,0 +1,33 @@
+#overviewTitle {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 10px 0;
+}
+
+#filterTextField {
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+}
+
+#createIncidentButton {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 15px;
+}
+
+#createIncidentButton:hover {
+    -fx-background-color: #005bb5;
+}
+
+TableView {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #cccccc;
+}
+
+TableColumn {
+    -fx-font-size: 14px;
+    -fx-text-fill: #444;
+    -fx-padding: 5px;
+}
