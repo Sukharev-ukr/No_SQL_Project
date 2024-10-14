@@ -6,30 +6,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.controllers.TicketsController" stylesheets="@overviewtickets.css">
-    <top>
-        <VBox alignment="TOP_CENTER" spacing="10" padding="20">
-            <children>
-                <Label text="Overview tickets" id="overviewTitle"/>
-                <HBox spacing="10" alignment="CENTER">
-                    <children>
-                        <TextField fx:id="filterTextField" promptText="Filter by email" />
-                        <Button text="CREATE INCIDENT" fx:id="createIncidentButton"/>
-                    </children>
-                </HBox>
-            </children>
-        </VBox>
-    </top>
+<VBox fx:id="ticketsPane" alignment="TOP_CENTER" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
 
-    <center>
+    <children>
+        <Label text="Overview Tickets" id="overviewTitle" />
+
+
+        <HBox spacing="15" alignment="CENTER">
+            <children>
+                <TextField fx:id="filterTextField" promptText="Filter by email" />
+                <Button fx:id="createIncidentButton" text="CREATE INCIDENT" />
+            </children>
+        </HBox>
+
+
         <TableView fx:id="ticketsTable" prefHeight="400" prefWidth="600">
             <columns>
-                <TableColumn text="ID" fx:id="idColumn" prefWidth="50"/>
-                <TableColumn text="Subject" fx:id="subjectColumn" prefWidth="150"/>
-                <TableColumn text="User" fx:id="userColumn" prefWidth="150"/>
-                <TableColumn text="Date" fx:id="dateColumn" prefWidth="100"/>
-                <TableColumn text="Status" fx:id="statusColumn" prefWidth="100"/>
+                <TableColumn text="ID" fx:id="idColumn" prefWidth="50" />
+                <TableColumn text="Subject" fx:id="subjectColumn" prefWidth="150" />
+                <TableColumn text="User" fx:id="userColumn" prefWidth="150" />
+                <TableColumn text="Date" fx:id="dateColumn" prefWidth="100" />
+                <TableColumn text="Status" fx:id="statusColumn" prefWidth="100" />
             </columns>
         </TableView>
-    </center>
-</BorderPane>
+    </children>
+</VBox>
+
