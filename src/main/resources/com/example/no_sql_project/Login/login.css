@@ -1,0 +1,51 @@
+#loginPane {
+    -fx-padding: 30px;
+    -fx-alignment: center;
+    -fx-background-color: #f9f9f9;
+}
+
+#titleLabel {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+#subtitleLabel {
+    -fx-font-size: 14px;
+    -fx-text-fill: #777;
+    -fx-wrap-text: true;
+    -fx-max-width: 300px;
+    -fx-alignment: center;
+    -fx-padding: 10px 0 20px 0;
+}
+
+GridPane {
+    -fx-vgap: 15;
+    -fx-hgap: 10;
+    -fx-alignment: center;
+}
+
+TextField, PasswordField {
+    -fx-pref-width: 200px;
+}
+
+CheckBox {
+    -fx-text-fill: #555;
+}
+
+Hyperlink {
+    -fx-text-fill: #0078d7;
+    -fx-padding: 0 0 0 10px;
+}
+
+Button {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-pref-width: 100px;
+    -fx-alignment: center;
+}
+
+Button:hover {
+    -fx-background-color: #005bb5;
+}

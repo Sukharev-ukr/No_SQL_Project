@@ -21,7 +21,7 @@ public class BaseDAO
             // Print the name of the database to confirm connection
             System.out.println("Connected to the database: " + database.getName());
 
-            // Close the MongoDB client
+            // Close the MongoDB client`
             mongoClient.close();
         } catch (Exception e) {
             e.printStackTrace();
