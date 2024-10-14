@@ -1,6 +1,7 @@
 package com.example.no_sql_project;
 
 import com.example.no_sql_project.DAO.BaseDAO;
+import com.example.no_sql_project.DAO.EmployeeDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,7 +18,9 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
         //BaseDAO mongoDB = new BaseDAO();
-        BaseDAO.testFunction();
+        EmployeeDAO test = new EmployeeDAO();
+        System.out.println(test.test());
+
     }
 
     public static void main(String[] args)
