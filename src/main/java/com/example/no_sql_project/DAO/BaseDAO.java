@@ -18,10 +18,6 @@ public class BaseDAO
             // Connecting to the database
             MongoDatabase database = mongoClient.getDatabase("NoSQL_Project");
 
-            // Print the name of the database to confirm connection
-            System.out.println("Connected to the database: " + database.getName());
-
-            // Close the MongoDB client`
             mongoClient.close();
         } catch (Exception e) {
             e.printStackTrace();
