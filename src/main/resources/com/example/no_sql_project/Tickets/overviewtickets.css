@@ -31,3 +31,13 @@ TableColumn {
     -fx-text-fill: #444;
     -fx-padding: 5px;
 }
+#submitTicketButton {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+}
+
+#submitTicketButton:hover {
+    -fx-background-color: #005bb5;
+}
