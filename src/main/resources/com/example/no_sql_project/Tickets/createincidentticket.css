@@ -1,0 +1,32 @@
+#createIncidentTitle {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+GridPane {
+    -fx-padding: 20px;
+    -fx-hgap: 10px;
+    -fx-vgap: 15px;
+}
+
+TextField, ComboBox, DatePicker, TextArea {
+    -fx-pref-width: 200px;
+}
+
+.submit-button {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+}
+
+.submit-button:hover {
+    -fx-background-color: #005bb5;
+}
+
+#cancelButton {
+    -fx-border-color: #ccc;
+    -fx-padding: 10px 20px;
+    -fx-background-color: transparent;
+}
