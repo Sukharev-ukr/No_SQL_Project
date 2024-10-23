@@ -19,7 +19,7 @@
             </children>
         </HBox>
 
-
+<!--TODO: make the table view columns the same as the fields in the ticket collection-->
         <TableView fx:id="ticketsTable" prefHeight="400" prefWidth="600">
             <columns>
                 <TableColumn text="ID" fx:id="idColumn" prefWidth="50" />

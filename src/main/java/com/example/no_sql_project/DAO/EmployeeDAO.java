@@ -12,7 +12,7 @@ public class EmployeeDAO extends BaseDAO {
     private static final String COLLECTION_NAME = "Employees";  // Name of the collection for employees
 
     /**
-     * Find an employee by name in the employees collection.
+     * Find an employee by name in the employees' collection.
      * @param name the name of the employee to search for
      * @return Document containing the employee data, or null if not found
      */
@@ -21,5 +21,9 @@ public class EmployeeDAO extends BaseDAO {
         Document document = new Document("_id", id);
         return findQuery(COLLECTION_NAME,document);
 
+    }
+    public void testEmployeeDao(String test){
+        Document document = new Document();
+        createEntry(COLLECTION_NAME,document);
     }
 }

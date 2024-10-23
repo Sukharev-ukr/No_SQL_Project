@@ -6,6 +6,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import javafx.util.Pair;
 import org.bson.Document;
 
 import javax.print.Doc;
@@ -21,18 +22,23 @@ public abstract class BaseDAO {
         return mongoClient;
     };
 
+    protected Pair<MongoClient,MongoCollection<Document>> openConnection(String targetCollection) throws MongoException {
+        MongoClient mongoClient = getClient();
+        MongoDatabase db = mongoClient.getDatabase(DATABASE);
+        MongoCollection<Document> collection = db.getCollection(targetCollection);
+        return new Pair<>(mongoClient, collection);
+    }
+
     protected void createEntry(String targetCollection, Document query)
     {
         try {
             //open conncetion
-            MongoClient mongoClient = getClient();
-            MongoDatabase db = mongoClient.getDatabase(DATABASE);
-            MongoCollection<Document> collection = db.getCollection(targetCollection);
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
 
             //execute queryString targetCollection, Document query
-            collection.insertOne((query));
+            connection.getValue().insertOne((query));
             //close connection to the database
-            mongoClient.close();
+            connection.getKey().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,14 +47,12 @@ public abstract class BaseDAO {
     protected Document findQuery(String targetCollection, Document query){
         try {
             //open conncetion
-            MongoClient mongoClient = getClient();
-            MongoDatabase db = mongoClient.getDatabase(DATABASE);
-            MongoCollection<Document> collection = db.getCollection(targetCollection);
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
 
             //execute query
-            Document document = collection.find((query)).first();
+            Document document = connection.getValue().find((query)).first();
             //close connection to the database
-            mongoClient.close();
+            connection.getKey().close();
 
             return document;
         } catch (Exception e) {
@@ -61,15 +65,13 @@ public abstract class BaseDAO {
     {
         try {
             //open conncetion
-            MongoClient mongoClient = getClient();
-            MongoDatabase db = mongoClient.getDatabase(DATABASE);
-            MongoCollection<Document> collection = db.getCollection(targetCollection);
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
 
             //execute query
-            collection.updateOne(target,update);
+            connection.getValue().updateOne(target,update);
 
             //close connection to the database
-            mongoClient.close();
+            connection.getKey().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,14 +81,12 @@ public abstract class BaseDAO {
     {
         try {
             //open conncetion
-            MongoClient mongoClient = getClient();
-            MongoDatabase db = mongoClient.getDatabase(DATABASE);
-            MongoCollection<Document> collection = db.getCollection(targetCollection);
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
 
             //execute query
-            collection.deleteOne((query));
+            connection.getValue().deleteOne((query));
             //close connection to the database
-            mongoClient.close();
+            connection.getKey().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,23 +98,4 @@ public abstract class BaseDAO {
 //        TODO: look in to list<BJSON> for aggrigation pipline queries
         return null;
     };
-
-    //Select Query
-    /*
-    protected List<Document> executeSelectQuery(Bson filter) {
-        List<Document> documents = new ArrayList<>();
-        MongoCollection<Document> collection = database.getCollection("employees");
-
-        try (MongoCursor<Document> cursor = collection.find(filter).iterator()) {
-            while (cursor.hasNext()) {
-                documents.add(cursor.next());
-            }
-        } catch (Exception e) {
-            // Log the exception; Depending on your logging framework
-            // e.g., Logger.error("Error accessing database", e);
-            throw e;
-        }
-
-        return documents;
-    }*/
 }
