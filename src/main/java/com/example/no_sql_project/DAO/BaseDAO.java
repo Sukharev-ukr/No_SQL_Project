@@ -1,47 +1,101 @@
 package com.example.no_sql_project.DAO;
-
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import javafx.util.Pair;
 import org.bson.Document;
-import java.util.ArrayList;
-import java.util.List;
+
+import javax.print.Doc;
 
 public abstract class BaseDAO {
-    private MongoClient mongoClient;
-    private MongoDatabase database;
 
-    public BaseDAO() {
-        // Connect to MongoDB
-        mongoClient = MongoClients.create("mongodb+srv://user:test123@test.wqbk2.mongodb.net/");
-        database = mongoClient.getDatabase("NoSQL_Project");
+    //the string required to connect to the MongoDB cluster
+    final String CONNECTION_STRING = "mongodb+srv://user:test123@test.wqbk2.mongodb.net/";
+    final String DATABASE = "NoSQL_Project";
+
+    protected MongoClient getClient() throws MongoException {
+        MongoClient mongoClient = new MongoClient(new MongoClientURI(CONNECTION_STRING));
+        return mongoClient;
+    };
+
+    protected Pair<MongoClient,MongoCollection<Document>> openConnection(String targetCollection) throws MongoException {
+        MongoClient mongoClient = getClient();
+        MongoDatabase db = mongoClient.getDatabase(DATABASE);
+        MongoCollection<Document> collection = db.getCollection(targetCollection);
+        return new Pair<>(mongoClient, collection);
     }
 
-    protected MongoCollection<Document> getCollection(String collectionName) {
-        return database.getCollection(collectionName);
-    }
+    protected void createEntry(String targetCollection, Document query)
+    {
+        try {
+            //open conncetion
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
 
-    protected void insertDocument(String collectionName, Document doc) {
-        MongoCollection<Document> collection = getCollection(collectionName);
-        collection.insertOne(doc);
-    }
-
-    protected List<Document> findDocuments(String collectionName, Document filter) {
-        MongoCollection<Document> collection = getCollection(collectionName);
-        return collection.find(filter).into(new ArrayList<>());
-    }
-
-    // Example method to execute a query with parameters
-    protected List<Document> queryDocuments(String collectionName, Document query) {
-        MongoCollection<Document> collection = getCollection(collectionName);
-        return collection.find(query).into(new ArrayList<>());
-    }
-
-    // Close the MongoDB connection
-    public void close() {
-        if (mongoClient != null) {
-            mongoClient.close();
+            //execute queryString targetCollection, Document query
+            connection.getValue().insertOne((query));
+            //close connection to the database
+            connection.getKey().close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
+    protected Document findQuery(String targetCollection, Document query){
+        try {
+            //open conncetion
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
+
+            //execute query
+            Document document = connection.getValue().find((query)).first();
+            //close connection to the database
+            connection.getKey().close();
+
+            return document;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    protected void updateOneEntry(String targetCollection, Document target, Document update)
+    {
+        try {
+            //open conncetion
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
+
+            //execute query
+            connection.getValue().updateOne(target,update);
+
+            //close connection to the database
+            connection.getKey().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void deleteOneQuery(String targetCollection, Document query)
+    {
+        try {
+            //open conncetion
+            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
+
+            //execute query
+            connection.getValue().deleteOne((query));
+            //close connection to the database
+            connection.getKey().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    protected Document executeAggregation()
+    {
+//        TODO: look in to list<BJSON> for aggrigation pipline queries
+        return null;
+    };
 }
