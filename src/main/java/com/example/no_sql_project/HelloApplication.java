@@ -17,7 +17,6 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
         //BaseDAO mongoDB = new BaseDAO();
-        BaseDAO.testFunction();
     }
 
     public static void main(String[] args)
