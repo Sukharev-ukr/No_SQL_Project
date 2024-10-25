@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- Navigation Bar -->
+    <HBox alignment="CENTER" spacing="20" styleClass="nav-bar">
+        <children>
+            <Button text="Dashboard" styleClass="nav-button" />
+            <Button text="Incident Management" styleClass="nav-button" />
+            <Button text="User Management" styleClass="nav-button" />
+        </children>
+    </HBox>
+
+    <!-- Title -->
+    <Label text="Current incidents" styleClass="main-title" />
+
+    <!-- Main Content Layout -->
+    <HBox spacing="20" alignment="CENTER">
+        <children>
+            <!-- Unresolved Incidents Box -->
+            <VBox spacing="10" alignment="CENTER" styleClass="stats-box unresolved-incidents">
+                <children>
+                    <Label text="Unresolved incidents" styleClass="box-title" />
+                    <Hyperlink text="All tickets currently open" />
+                    <!-- Pie Chart Circle -->
+                    <StackPane styleClass="circle-container">
+                        <Label text="7/15" styleClass="circle-text" />
+                    </StackPane>
+                </children>
+            </VBox>
+
+            <!-- Incidents Past Deadline Box -->
+            <VBox spacing="10" alignment="CENTER" styleClass="stats-box past-deadline">
+                <children>
+                    <Label text="Incidents past deadline" styleClass="box-title" />
+                    <Label text="These tickets need your immediate attention" wrapText="true" />
+                    <!-- Pie Chart Circle -->
+                    <StackPane styleClass="circle-container">
+                        <Label text="1" styleClass="circle-text past-deadline" />
+                    </StackPane>
+                </children>
+            </VBox>
+        </children>
+    </HBox>
+
+    <!-- Show List Button -->
+    <Button text="SHOW LIST" styleClass="show-list-button" />
+</VBox>

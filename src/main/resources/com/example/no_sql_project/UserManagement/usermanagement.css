@@ -1,0 +1,53 @@
+/* General Layout */
+.root {
+    -fx-padding: 20;
+    -fx-background-color: #f4f4f4;
+}
+
+/* Main Title */
+.main-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Form Fields */
+.text-field,
+.combo-box {
+    -fx-pref-width: 300;
+    -fx-padding: 10;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-background-color: #ffffff;
+}
+
+.combo-box {
+    -fx-background-color: #ffffff;
+}
+
+.checkbox {
+    -fx-padding: 10;
+}
+
+/* Buttons */
+.cancel-button {
+    -fx-background-color: #d6d6d6;
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #bcbcbc;
+}
+
+.add-user-button {
+    -fx-background-color: #0078d7; /* Blue color for add button */
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+}
+
+.add-user-button:hover {
+    -fx-background-color: #005bb5;
+}
