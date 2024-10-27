@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="loginPane" alignment="CENTER" spacing="20" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="loginPane" alignment="CENTER" spacing="20" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.HelloController">
     <children>
         <Label id="titleLabel" text="NoDesk: TGG" />
         <Label id="subtitleLabel" contentDisplay="CENTER" text="Please provide login credentials to login to NoDesk for The Garden Group" wrapText="true" />
@@ -16,21 +16,24 @@
                 <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <PasswordField fx:id="passwordField" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <CheckBox text="Remember Me" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                <Hyperlink text="Forgot Login Details?" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                <CheckBox fx:id="rememberMeCheckbox" text="Remember Me" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
 
-                <Button fx:id="loginButton" text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                <Button fx:id="loginButton" text="Login" onAction="#handleLoginButton" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+
+                <!-- Add error label for displaying login error messages -->
+                <Label fx:id="errorLabel" text="" textFill="red" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
             </children>
-         <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
         </GridPane>
     </children>
 </VBox>

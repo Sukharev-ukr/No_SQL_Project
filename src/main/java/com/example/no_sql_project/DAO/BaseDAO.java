@@ -8,9 +8,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import javafx.util.Pair;
 import org.bson.Document;
-
-import javax.print.Doc;
-
 public abstract class BaseDAO {
 
     //the string required to connect to the MongoDB cluster
@@ -29,7 +26,7 @@ public abstract class BaseDAO {
         return new Pair<>(mongoClient, collection);
     }
 
-    protected void createEntry(String targetCollection, Document query)
+    public void createEntry(String targetCollection, Document query)
     {
         try {
             //open conncetion
