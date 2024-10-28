@@ -18,7 +18,7 @@ public class EmployeeDAO extends BaseDAO {
      * @return Document containing the employee data, or null if not found
      */
 
-    public Employee findEmplyeeByID (ObjectId id) {
+    public Employee findEmployeeByID (ObjectId id) {
         Document document = new Document("_id", id);
         findQuery(COLLECTION_NAME,document);
         return null;
