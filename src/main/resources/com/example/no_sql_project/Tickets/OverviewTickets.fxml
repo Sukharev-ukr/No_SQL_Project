@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="ticketsPane" alignment="TOP_CENTER" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="ticketsPane" alignment="TOP_CENTER" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
 
     <children>
         <Label text="Overview Tickets" id="overviewTitle" />

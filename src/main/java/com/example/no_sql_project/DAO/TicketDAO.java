@@ -80,7 +80,6 @@ public class TicketDAO extends BaseDAO {
         }
         return null;
     }
-
     private Document parseDocument(Ticket ticket) {
         Document data = new Document();
         data.put("Employee_ID", ticket.getEmployeeId());

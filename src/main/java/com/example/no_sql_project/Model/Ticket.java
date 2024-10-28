@@ -7,15 +7,15 @@ import java.time.LocalDateTime;
 public class Ticket {
     ObjectId id;
     String employeeId;
-    String type;
     Priority priority;
     Status status;
     LocalDateTime ticketDate;
     String description;
+    Type type;
 
     // Constructors
     // creating an object that already exists in the database
-    public Ticket(ObjectId id,String employeeId,String type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+    public Ticket(ObjectId id,String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
         this.id = id;
         this.description = description;
         this.ticketDate = ticketDate;
@@ -25,13 +25,16 @@ public class Ticket {
         this.employeeId = employeeId;
     }
     // creating a new Employee object that doesn't yet exist in the DB
-    public Ticket(String employeeId,String type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+    public Ticket(String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+
         this.description = description;
         this.ticketDate = ticketDate;
         this.status = status;
         this.priority = priority;
         this.type = type;
         this.employeeId = employeeId;
+        this.type = type;
+        this.priority = priority;
     }
 
     public ObjectId getId() {
@@ -70,18 +73,13 @@ public class Ticket {
         this.priority = priority;
     }
 
-    public String getType() {
-        return type;
-    }
+    public Type getType() {return type;}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setType(Type type) {this.type = type;}
 
     public String getEmployeeId() {
         return employeeId;
     }
-
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
