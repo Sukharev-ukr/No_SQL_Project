@@ -1,0 +1,86 @@
+.root {
+    -fx-padding: 20;
+    -fx-background-color: #f4f4f4;
+}
+
+/* Navigation Bar */
+.nav-bar {
+    -fx-background-color: #e6e6e6;
+    -fx-padding: 10 20;
+}
+
+.nav-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333;
+    -fx-padding: 10 20;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+}
+
+.nav-button:hover {
+    -fx-background-color: #d6d6d6;
+}
+
+/* Main Title */
+.main-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Statistics Boxes */
+.stats-box {
+    -fx-padding: 15;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 8;
+    -fx-border-color: #bdbdbd;
+    -fx-border-width: 2;
+    -fx-pref-width: 200;
+}
+
+.unresolved-incidents {
+    -fx-border-color: #0078d7; /* Blue border for unresolved incidents */
+}
+
+.past-deadline {
+    -fx-border-color: #ff4d4d; /* Red border for past deadline */
+}
+
+/* Box Titles */
+.box-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444;
+}
+
+/* Circle Container */
+.circle-container {
+    -fx-background-color: #e6e6e6;
+    -fx-border-radius: 100;
+    -fx-pref-width: 100;
+    -fx-pref-height: 100;
+    -fx-alignment: center;
+}
+
+/* Circle Text */
+.circle-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.circle-text.past-deadline {
+    -fx-text-fill: #ff4d4d; /* Red text for incidents past deadline */
+}
+
+/* Show List Button */
+.show-list-button {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+}
+
+.show-list-button:hover {
+    -fx-background-color: #005bb5;
+}
