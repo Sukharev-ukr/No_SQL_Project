@@ -1,5 +1,6 @@
 package com.example.no_sql_project.DAO;
 
+import com.example.no_sql_project.Model.Employee;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
@@ -17,13 +18,21 @@ public class EmployeeDAO extends BaseDAO {
      * @return Document containing the employee data, or null if not found
      */
 
-    public Document findEmplyeeByID (ObjectId id) {
+    public Employee findEmployeeByID (ObjectId id) {
         Document document = new Document("_id", id);
-        return findQuery(COLLECTION_NAME,document);
+        findQuery(COLLECTION_NAME,document);
+        return null;
+
 
     }
-    public void testEmployeeDao(String test){
-        Document document = new Document();
-        createEntry(COLLECTION_NAME,document);
+    public Employee[] getAllEmployees() {
+        return null;
     }
+    public void deleteEmployeeByID (ObjectId id) {
+
+    }
+    public void addEmployee (Employee employee) {
+
+    }
+    public void updateEmployee (Employee employee) {}
 }
