@@ -1,21 +1,41 @@
 package com.example.no_sql_project.Model;
 
+import org.bson.types.ObjectId;
+
 import java.time.LocalDateTime;
 
 public class Ticket {
-    String id;
+    ObjectId id;
     String employeeId;
-    int ticketNr;
+    String type;
+    Priority priority;
     Status status;
     LocalDateTime ticketDate;
     String description;
 
-    public Ticket(String description, LocalDateTime ticketDate, Status status, int ticketNr, String employeeId) {
+    // Constructors
+    // creating an object that already exists in the database
+    public Ticket(ObjectId id,String employeeId,String type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+        this.id = id;
         this.description = description;
         this.ticketDate = ticketDate;
         this.status = status;
-        this.ticketNr = ticketNr;
+        this.priority = priority;
+        this.type = type;
         this.employeeId = employeeId;
+    }
+    // creating a new Employee object that doesn't yet exist in the DB
+    public Ticket(String employeeId,String type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+        this.description = description;
+        this.ticketDate = ticketDate;
+        this.status = status;
+        this.priority = priority;
+        this.type = type;
+        this.employeeId = employeeId;
+    }
+
+    public ObjectId getId() {
+        return id;
     }
 
     public String getDescription() {
@@ -42,12 +62,20 @@ public class Ticket {
         this.status = status;
     }
 
-    public int getTicketNr() {
-        return ticketNr;
+    public Priority getPriority() {
+        return priority;
     }
 
-    public void setTicketNr(int ticketNr) {
-        this.ticketNr = ticketNr;
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getEmployeeId() {
@@ -56,13 +84,5 @@ public class Ticket {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }
