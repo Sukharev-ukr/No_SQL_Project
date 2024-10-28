@@ -1,25 +1,44 @@
 package com.example.no_sql_project.Model;
 
+import org.bson.types.ObjectId;
+
 import java.time.LocalDateTime;
 
 public class Ticket {
-    String id;
+    ObjectId id;
     String employeeId;
-    int ticketNr;
+    Priority priority;
     Status status;
     LocalDateTime ticketDate;
     String description;
     Type type;
-    Priority priority;
 
-    public Ticket(String description, LocalDateTime ticketDate, Status status, int ticketNr, String employeeId, Type type, Priority priority) {
+    // Constructors
+    // creating an object that already exists in the database
+    public Ticket(ObjectId id,String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+        this.id = id;
         this.description = description;
         this.ticketDate = ticketDate;
         this.status = status;
-        this.ticketNr = ticketNr;
+        this.priority = priority;
+        this.type = type;
+        this.employeeId = employeeId;
+    }
+    // creating a new Employee object that doesn't yet exist in the DB
+    public Ticket(String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+
+        this.description = description;
+        this.ticketDate = ticketDate;
+        this.status = status;
+        this.priority = priority;
+        this.type = type;
         this.employeeId = employeeId;
         this.type = type;
         this.priority = priority;
+    }
+
+    public ObjectId getId() {
+        return id;
     }
 
     public String getDescription() {
@@ -46,35 +65,22 @@ public class Ticket {
         this.status = status;
     }
 
-    public int getTicketNr() {
-        return ticketNr;
+    public Priority getPriority() {
+        return priority;
     }
 
-    public void setTicketNr(int ticketNr) {
-        this.ticketNr = ticketNr;
-    }
-
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     public Type getType() {return type;}
 
     public void setType(Type type) {this.type = type;}
 
-    public Priority getPriority() {return priority;}
-
-    public void setPriority(Priority priority) {this.priority = priority;}
-
-    public String getId() {
-        return id;
+    public String getEmployeeId() {
+        return employeeId;
     }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 }

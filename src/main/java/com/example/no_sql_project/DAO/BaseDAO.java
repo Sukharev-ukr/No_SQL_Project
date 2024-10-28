@@ -2,14 +2,12 @@ package com.example.no_sql_project.DAO;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import static com.mongodb.client.model.Filters.eq;
-import com.mongodb.MongoException;
+
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import javafx.util.Pair;
 import org.bson.Document;
-
-import javax.print.Doc;
+import org.bson.types.ObjectId;
 
 public abstract class BaseDAO {
 
@@ -17,85 +15,75 @@ public abstract class BaseDAO {
     final String CONNECTION_STRING = "mongodb+srv://user:test123@test.wqbk2.mongodb.net/";
     final String DATABASE = "NoSQL_Project";
 
-    protected MongoClient getClient() throws MongoException {
-        MongoClient mongoClient = new MongoClient(new MongoClientURI(CONNECTION_STRING));
-        return mongoClient;
-    };
+    MongoClient mongoClient;
+    MongoDatabase database;
+    MongoCollection<Document> collection;
 
-    protected Pair<MongoClient,MongoCollection<Document>> openConnection(String targetCollection) throws MongoException {
-        MongoClient mongoClient = getClient();
-        MongoDatabase db = mongoClient.getDatabase(DATABASE);
-        MongoCollection<Document> collection = db.getCollection(targetCollection);
-        return new Pair<>(mongoClient, collection);
+    protected BaseDAO() {
+        mongoClient = new MongoClient(new MongoClientURI(CONNECTION_STRING));
+        database = mongoClient.getDatabase(DATABASE);
     }
 
-    protected void createEntry(String targetCollection, Document query)
+    protected void insertOne(Document document)
     {
         try {
-            //open conncetion
-            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
-
             //execute queryString targetCollection, Document query
-            connection.getValue().insertOne((query));
+            collection.insertOne((document));
             //close connection to the database
-            connection.getKey().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected Document findQuery(String targetCollection, Document query){
+    protected Document findOneQuery(Document query){
         try {
-            //open conncetion
-            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
-
             //execute query
-            Document document = connection.getValue().find((query)).first();
-            //close connection to the database
-            connection.getKey().close();
-
-            return document;
+            return collection.find((query)).first();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-
-    protected void updateOneEntry(String targetCollection, Document target, Document update)
+    protected FindIterable<Document> findMultiple(Document query)
     {
         try {
-            //open conncetion
-            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
+            return collection.find((query));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-            //execute query
-            connection.getValue().updateOne(target,update);
+    protected FindIterable<Document> getAll(){
+        return collection.find();
+    }
 
-            //close connection to the database
-            connection.getKey().close();
+    protected void updateOneEntry(ObjectId id, Document update)
+    {
+        try {
+            collection.updateOne(eq("_id",id),update);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected void deleteOneQuery(String targetCollection, Document query)
+    protected void deleteOne(ObjectId id)
     {
         try {
-            //open conncetion
-            Pair<MongoClient,MongoCollection<Document>> connection =  openConnection(targetCollection);
-
             //execute query
-            connection.getValue().deleteOne((query));
-            //close connection to the database
-            connection.getKey().close();
+            collection.deleteOne(eq("_id",id));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     protected Document executeAggregation()
     {
 //        TODO: look in to list<BJSON> for aggrigation pipline queries
         return null;
     };
+
+    protected void closeConnection(){
+        mongoClient.close();
+    }
 }
