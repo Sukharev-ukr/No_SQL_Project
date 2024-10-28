@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.collections.FXCollections?>
 
-
-
-<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@createincidentticket.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@createincidentticket.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.Createincidentticket">
     <children>
         <!-- Title Label -->
-        <Label text="Create new incident ticket" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Create new incident ticket" />
 
         <!-- Form Fields Grid -->
         <GridPane alignment="CENTER" hgap="10" vgap="15">
             <children>
                 <Label text="Date/time reported:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <DatePicker fx:id="datePickerReported" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
-                <Label text="Subject of incident:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <TextField fx:id="subjectField" promptText="Subject of incident" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                 <Label text="Type of incident:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <ComboBox fx:id="incidentTypeComboBox" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -32,16 +23,26 @@
                 <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                 <ComboBox fx:id="priorityComboBox" promptText="Select priority" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                <Label text="Deadline/follow up:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                <ComboBox fx:id="deadlineComboBox" promptText="Select follow-up" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-
                 <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                 <TextArea fx:id="descriptionArea" prefHeight="100" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             </children>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
         </GridPane>
 
         <!-- Buttons -->
-        <HBox spacing="15" alignment="CENTER">
+        <HBox alignment="CENTER" spacing="15">
             <children>
                 <Button fx:id="cancelButton" text="CANCEL" />
                 <Button fx:id="submitTicketButton" text="SUBMIT TICKET" />

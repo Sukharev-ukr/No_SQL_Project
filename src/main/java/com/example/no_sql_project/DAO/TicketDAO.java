@@ -27,8 +27,8 @@ public class TicketDAO extends BaseDAO {
     public void deleteTicketByID (ObjectId id) {
 
     }
-    public void addTicket (Employee employee) {
+    public void addTicket (Ticket ticket) {
 
     }
-    public void updateTicket (Employee employee) {}
+    public void updateTicket (Ticket ticket) {}
 }
