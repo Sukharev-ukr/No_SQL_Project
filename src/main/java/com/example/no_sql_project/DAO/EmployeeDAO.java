@@ -1,6 +1,7 @@
 package com.example.no_sql_project.DAO;
 
 import com.example.no_sql_project.Model.Employee;
+import com.example.no_sql_project.utils.PasswordUtils;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
@@ -22,14 +23,15 @@ public class EmployeeDAO extends BaseDAO {
 
     }
 
-    public Document findEmployeeByNameAndPassword(String name, String password) {
-        try {
-            Document query = new Document("Name", name).append("Password", password);
-            return findQuery("Employees", query);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Document findEmployeeByNameAndPassword(String name, String plainPassword) {
+        // Hash the user's input password to match the database hash
+        String hashedPassword = PasswordUtils.hashPassword(plainPassword);
+
+        // Create the query with hashed password
+        Document query = new Document("Name", name).append("Password", hashedPassword);
+
+        // Use the BaseDAO findQuery method to search for the user in the database
+        return findQuery("Employees", query);
     }
 
     public Employee[] getAllEmployees() {
