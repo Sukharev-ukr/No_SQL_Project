@@ -2,6 +2,10 @@ package com.example.no_sql_project.DAO;
 
 import com.example.no_sql_project.Model.Employee;
 
+import com.example.no_sql_project.utils.PasswordUtils;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
 import static com.mongodb.client.model.Filters.eq;
 
 import com.example.no_sql_project.Model.Ticket;
@@ -15,9 +19,10 @@ public class EmployeeDAO extends BaseDAO {
 
     private static final String COLLECTION_NAME = "Employees";  // Name of the collection for employees
 
-    public EmployeeDAO() {
+  public EmployeeDAO() {
         collection = database.getCollection(COLLECTION_NAME);
     }
+
 
     public Employee findEmployeeById(ObjectId id) {
         Document query = new Document("_id", id);
@@ -38,8 +43,19 @@ public class EmployeeDAO extends BaseDAO {
         insertOne(parseDocument(employee));
     }
 
+
     public void deleteEmployee(ObjectId id){
         deleteOne(id);
+  }
+    public Document findEmployeeByNameAndPassword(String name, String plainPassword) {
+        // Hash the user's input password to match the database hash
+        String hashedPassword = PasswordUtils.hashPassword(plainPassword);
+
+        // Create the query with hashed password
+        Document query = new Document("Name", name).append("Password", hashedPassword);
+
+        // Use the BaseDAO findQuery method to search for the user in the database
+        return findOneQuery(query);
     }
 
     public void updateEmployee(ObjectId id, Employee employee){
@@ -73,6 +89,5 @@ public class EmployeeDAO extends BaseDAO {
         data.put("Privileges", employee.getPrivileges());
         return data;
     }
-
 
 }
