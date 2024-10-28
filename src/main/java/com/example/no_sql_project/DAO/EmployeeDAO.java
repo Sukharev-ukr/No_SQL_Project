@@ -12,11 +12,7 @@ public class EmployeeDAO extends BaseDAO {
 
     private static final String COLLECTION_NAME = "Employees";  // Name of the collection for employees
 
-    /**
-     * Find an employee by name in the employees' collection.
-     * @param name the name of the employee to search for
-     * @return Document containing the employee data, or null if not found
-     */
+
 
     public Employee findEmployeeByID (ObjectId id) {
         Document document = new Document("_id", id);
@@ -25,6 +21,17 @@ public class EmployeeDAO extends BaseDAO {
 
 
     }
+
+    public Document findEmployeeByNameAndPassword(String name, String password) {
+        try {
+            Document query = new Document("Name", name).append("Password", password);
+            return findQuery("Employees", query);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Employee[] getAllEmployees() {
         return null;
     }
