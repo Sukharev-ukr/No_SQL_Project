@@ -3,6 +3,7 @@ package com.example.no_sql_project.DAO;
 import com.example.no_sql_project.Model.Priority;
 import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
+import com.example.no_sql_project.Model.Type;
 import com.mongodb.DBCallback;
 import com.mongodb.client.FindIterable;
 import org.bson.Document;
@@ -64,7 +65,7 @@ public class TicketDAO extends BaseDAO {
             return new Ticket(
                     data.getObjectId("_id"),
                     data.getString("Employee_ID"),
-                    data.getString("Type"),
+                    Type.valueOf(data.getString("Type")), // Change here
                     Priority.valueOf(data.getString("Priority")),
                     Status.valueOf(data.getString("Status")),
                     LocalDateTime.parse(data.getString("Date")),
@@ -83,7 +84,7 @@ public class TicketDAO extends BaseDAO {
     private Document parseDocument(Ticket ticket) {
         Document data = new Document();
         data.put("Employee_ID", ticket.getEmployeeId());
-        data.put("Type", ticket.getType());
+        data.put("Type", ticket.getType().toString()); // Change here
         data.put("Priority", ticket.getPriority());
         data.put("Status", ticket.getStatus());
         data.put("Date", ticket.getTicketDate());
