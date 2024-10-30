@@ -84,7 +84,7 @@ public class TicketDAO extends BaseDAO {
             return new Ticket(
                     data.getObjectId("_id"),
                     data.getString("Employee_ID"),
-                    Type.valueOf(data.getString("Type")), // Change here
+                    Ticket.parseType(data.getString("Type")), // Change from Type.valueOf to parseType here
                     Priority.valueOf(data.getString("Priority")),
                     Status.valueOf(data.getString("Status")),
                     LocalDateTime.parse(data.getString("Date")),
@@ -104,9 +104,9 @@ public class TicketDAO extends BaseDAO {
         Document data = new Document();
         data.put("Employee_ID", ticket.getEmployeeId());
         data.put("Type", ticket.getType().toString()); // Change here
-        data.put("Priority", ticket.getPriority());
-        data.put("Status", ticket.getStatus());
-        data.put("Date", ticket.getTicketDate());
+        data.put("Priority", ticket.getPriority().name()); //Add .name() to convert enum constannt
+        data.put("Status", ticket.getStatus().name()); //Add .name() to convert enum constannt
+        data.put("Date", ticket.getTicketDate().toString()); //convert to standard string
         data.put("Description", ticket.getDescription());
         return data;
     }

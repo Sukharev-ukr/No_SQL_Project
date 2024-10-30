@@ -21,7 +21,9 @@ public class OverviewTicket {
     @FXML
     private Button createIncidentButton;
     @FXML
+
     private TableView<Ticket> ticketTable;
+
     @FXML
     private TableColumn<Ticket, String> typeColumn;
     @FXML
@@ -80,8 +82,8 @@ public class OverviewTicket {
         } else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
         }
-        ticketTable.getItems().clear();
-        ticketTable.getItems().addAll(tickets);
+        ticketsTable.getItems().clear();
+        ticketsTable.getItems().addAll(tickets);
     }
 
     @FXML
