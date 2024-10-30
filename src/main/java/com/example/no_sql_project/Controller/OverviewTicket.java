@@ -66,8 +66,8 @@ public class OverviewTicket {
         } else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
         }
-        ticketTable.getItems().clear();
-        ticketTable.getItems().addAll(tickets);
+        ticketsTable.getItems().clear();
+        ticketsTable.getItems().addAll(tickets);
     }
 
     @FXML
