@@ -34,13 +34,11 @@ public class OverviewTicket {
     private TableColumn<Ticket, String> descriptionColumn;
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
-
+    private Button manageUsersButton;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
 
-    public void setLoggedInEmployee(Employee loggedInEmployee) {
-        this.loggedInEmployee = loggedInEmployee;
-    }
+
 
     @FXML
     public void initialize() {
@@ -56,6 +54,22 @@ public class OverviewTicket {
         if (prioritySortChoiceBox != null) {
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
+        }
+    }
+    public void setLoggedInEmployee(Employee loggedInEmployee) {
+        this.loggedInEmployee = loggedInEmployee;
+        initializeDashboardBasedOnRole();
+    }
+
+    private void initializeDashboardBasedOnRole() {
+        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+            // ServiceDesk gets full privileges, including the ability to manage users
+            manageUsersButton.setVisible(true);
+            createIncidentButton.setVisible(true);
+        } else {
+            // Regular employee has limited functionality
+            manageUsersButton.setVisible(false); // Hide user management button for regular employees
+            createIncidentButton.setVisible(true);
         }
     }
 
