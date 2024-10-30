@@ -30,8 +30,6 @@ public class Ticket {
         this.description = description;
         this.ticketDate = ticketDate;
         this.status = status;
-        this.priority = priority;
-        this.type = type;
         this.employeeId = employeeId;
         this.type = type;
         this.priority = priority;
@@ -75,12 +73,34 @@ public class Ticket {
 
     public Type getType() {return type;}
 
-    public void setType(Type type) {this.type = type;}
+    //public void setType(Type type)
+    //{
+        //this.type = type;
+    //}
+
+    public void setType(Object inputType) {
+        if (inputType instanceof Type) { //if inputType is a Type, it assigns it directly.
+            this.type = (Type) inputType;
+        } else if (inputType instanceof String) {
+            this.type = parseType((String) inputType); //If inputType is a String, it uses the parseType helper method to convert the string to the corresponding Type enum.
+        } else {
+            throw new IllegalArgumentException("Invalid type input: " + inputType);
+        }
+    }
 
     public String getEmployeeId() {
         return employeeId;
     }
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+    // Helper method to convert a string to the appropriate Type enum
+    public static Type parseType(String typeString) { //A setType(Object inputType) method that handles both Type enums and strings, converting strings using parseType.
+        for (Type type : Type.values()) {
+            if (type.toString().equalsIgnoreCase(typeString)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown Type: " + typeString);
     }
 }
