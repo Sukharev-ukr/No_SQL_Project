@@ -1,39 +1,41 @@
 package com.example.no_sql_project.Model;
 
 
+import org.bson.types.ObjectId;
+
 public class Employee {
-    private String id;
+    private ObjectId id;;
     private String name;
     private String password;
     private String role;
     private String privileges;
 
     // Constructors
-    public Employee() {
-    }
-
-    public Employee(String id, String name, String password, String role, String privileges) {
+    // creating an object that already exists in the database
+    public Employee(ObjectId id, String name, String password, String role, String privileges) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.role = role;
         this.privileges = privileges;
     }
+    // creating a new Employee object that doesn't yet exist in the DB
+    public Employee( String name, String password, String role, String privileges) {
+        this.name = name;
+        this.password = password;
+        this.role = role;
+        this.privileges = privileges;
+    }
 
-    // Getters and Setters
-    public String getId() {
+    public ObjectId getId(){
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
-
-    public void setName(String name) {
+    public void setName(String name){
         this.name = name;
     }
 
