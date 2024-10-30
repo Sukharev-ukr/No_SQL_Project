@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="608.0" prefWidth="720.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
-
-    <children>
-        <Label id="overviewTitle" text="Overview Tickets" />
-        <HBox fx:id="deleteButton" alignment="CENTER" spacing="15">
-
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="536.0" prefWidth="710.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
+<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="585.0" prefWidth="714.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
     <children>
         <Label id="overviewTitle" text="Overview Tickets" />
 
@@ -37,7 +30,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <Button text="Sort" onAction="#handleSortTickets" />
+                <Button onAction="#handleSortTickets" text="Sort" />
             </children>
         </HBox>
 

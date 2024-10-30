@@ -78,7 +78,29 @@ public class OverviewTicket {
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
         }
+        if (loggedInEmployee != null && loggedInEmployee.getRole().equals("ServiceDesk")) {
+            deleteButton.setDisable(true);
+            escalationButton.setDisable(true);
+            closeButton.setDisable(true);
+        }
+        loadTicketBaseOnRole();
     }
+
+     @FXML
+    private void handleSortTickets() {
+        String selectedSortOrder = prioritySortChoiceBox.getValue();
+        ArrayList<Ticket> tickets;
+        if (selectedSortOrder.equals("High to Low")) {
+            tickets = ticketService.getTicketsSortedByPriorityDescending();
+        } else if (selectedSortOrder.equals("Low to High")) {
+            tickets = ticketService.getTicketsSortedByPriorityAscending();
+        } else {
+            tickets = ticketService.getAllTickets(); // Default unsorted
+        }
+        ticketTable.getItems().clear();
+        ticketTable.getItems().addAll(tickets);
+    }
+
 
     private void loadTicketBaseOnRole() {
         ArrayList<Ticket> tickets;
@@ -89,25 +111,6 @@ public class OverviewTicket {
         }
         ticketTable.getItems().clear();
         ticketTable.getItems().addAll(tickets);
-    }
-
-    @FXML
-
-    public void initialize() {
-        // Initialize table columns (ensure Ticket properties match these)
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        userColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("ticketDate"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
-
-        if (loggedInEmployee != null && loggedInEmployee.getRole().equals("ServiceDesk")) {
-            deleteButton.setDisable(true);
-            escalationButton.setDisable(true);
-            closeButton.setDisable(true);
-        }
-        loadTicketBaseOnRole();
     }
 
     @FXML
@@ -144,22 +147,9 @@ public class OverviewTicket {
         } else {
             showAlert("Error", "Please select a ticket to close.");
         }
-
-    private void handleSortTickets() {
-        String selectedSortOrder = prioritySortChoiceBox.getValue();
-        ArrayList<Ticket> tickets;
-        if (selectedSortOrder.equals("High to Low")) {
-            tickets = ticketService.getTicketsSortedByPriorityDescending();
-        } else if (selectedSortOrder.equals("Low to High")) {
-            tickets = ticketService.getTicketsSortedByPriorityAscending();
-        } else {
-            tickets = ticketService.getAllTickets(); // Default unsorted
-        }
-        ticketTable.getItems().clear();
-        ticketTable.getItems().addAll(tickets);
     }
-
-    public void switchToCreateIncident() {
+    @FXML
+    public void switchToCreateIncident () {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/Createincidentticket.fxml"));
             Parent root = fxmlLoader.load();
@@ -178,7 +168,6 @@ public class OverviewTicket {
             showAlert("Error", "Unable to load the Create Incident screen.");
         }
     }
-
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -187,3 +176,4 @@ public class OverviewTicket {
         alert.showAndWait();
     }
 }
+
