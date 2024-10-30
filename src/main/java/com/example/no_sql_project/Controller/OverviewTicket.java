@@ -3,6 +3,8 @@ package com.example.no_sql_project.Controller;
 import com.example.no_sql_project.DAO.EmployeeDAO;
 import com.example.no_sql_project.DAO.TicketDAO;
 import com.example.no_sql_project.Model.Employee;
+import com.example.no_sql_project.Model.Priority;
+import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
 import com.example.no_sql_project.Service.TicketService;
 import javafx.fxml.FXML;
@@ -23,7 +25,13 @@ public class OverviewTicket {
     @FXML
     private Button createIncidentButton;
     @FXML
-    private TableView ticketsTable;
+    private Button deleteButton;
+    @FXML
+    private Button closeButton;
+    @FXML
+    private Button escalationButton;
+    @FXML
+    private TableView<Ticket> ticketTable;
     @FXML
     private TableColumn<Ticket, String> typeColumn;
     @FXML
@@ -53,8 +61,8 @@ public class OverviewTicket {
         else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
         }
-        ticketsTable.getItems().clear();
-        ticketsTable.getItems().addAll(tickets);
+        ticketTable.getItems().clear();
+        ticketTable.getItems().addAll(tickets);
     }
 
     @FXML
@@ -66,6 +74,49 @@ public class OverviewTicket {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
+
+        if (loggedInEmployee != null && loggedInEmployee.getRole().equals("ServiceDesk")) {
+            deleteButton.setDisable(true);
+            escalationButton.setDisable(true);
+            closeButton.setDisable(true);
+        }
+        loadTicketBaseOnRole();
+    }
+
+    @FXML
+    private void handleEscalateTicket() {
+        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicket != null) {
+            // Check the current priority and escalate if possible
+            Priority currentPriority = selectedTicket.getPriority();
+            if (currentPriority == Priority.low) {
+                selectedTicket.setPriority(Priority.normal);
+            } else if (currentPriority == Priority.normal) {
+                selectedTicket.setPriority(Priority.high);
+            } else if (currentPriority == Priority.high) {
+                showAlert("Escalate Ticket", "The ticket is already at the highest priority level.");
+                return;  // Exit if no further escalation is possible
+            }
+
+            // Update the ticket in the database
+            ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
+            loadTicketBaseOnRole();  // Refresh the table to show the updated priority
+            showAlert("Success", "The ticket priority has been escalated.");
+        } else {
+            showAlert("Error", "Please select a ticket to escalate.");
+        }
+    }
+    @FXML
+    private void handleCloseTicket() {
+        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicket != null) {
+            selectedTicket.setStatus(Status.closed);  // Update status to closed
+            ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
+            loadTicketBaseOnRole();  // Refresh table
+            showAlert("Success", "The ticket has been closed successfully.");
+        } else {
+            showAlert("Error", "Please select a ticket to close.");
+        }
     }
 
     public void switchToCreateIncident() {
