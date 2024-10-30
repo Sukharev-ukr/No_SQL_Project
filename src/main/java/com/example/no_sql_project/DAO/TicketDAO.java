@@ -8,7 +8,8 @@ import com.mongodb.DBCallback;
 import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
+import static com.mongodb.client.model.Sorts.ascending;
+import static com.mongodb.client.model.Sorts.descending;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -34,6 +35,24 @@ public class TicketDAO extends BaseDAO {
 
     public ArrayList<Ticket> getAllTickets() {
         FindIterable<Document> ticketCollection = getAll();
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        for (Document document : ticketCollection) {
+            tickets.add(parseTicket(document));
+        }
+        return tickets;
+    }
+    public ArrayList<Ticket> getAllTicketsSortedByPriorityAscending() {
+        FindIterable<Document> ticketCollection = getAll().sort(ascending("Priority"));
+        return parseTicketList(ticketCollection);
+    }
+
+    public ArrayList<Ticket> getAllTicketsSortedByPriorityDescending() {
+        FindIterable<Document> ticketCollection = getAll().sort(descending("Priority"));
+        return parseTicketList(ticketCollection);
+    }
+
+    // Utility method to parse tickets from FindIterable
+    private ArrayList<Ticket> parseTicketList(FindIterable<Document> ticketCollection) {
         ArrayList<Ticket> tickets = new ArrayList<>();
         for (Document document : ticketCollection) {
             tickets.add(parseTicket(document));
