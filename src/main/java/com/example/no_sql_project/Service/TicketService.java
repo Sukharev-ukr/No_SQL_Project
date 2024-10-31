@@ -36,4 +36,8 @@ public class TicketService {
     public ArrayList<Ticket> getTicketsSortedByPriorityDescending() {
         return ticketDAO.getAllTicketsSortedByPriorityDescending();
     }
+    public ArrayList<Ticket> getTicketsWithEmployeeNames() {
+        ArrayList<Ticket> tickets = ticketDAO.getTicketsWithEmployeeNames();
+        return tickets;
+    }
 }
