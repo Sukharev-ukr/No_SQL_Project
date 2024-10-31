@@ -6,6 +6,7 @@ import com.example.no_sql_project.Model.Priority;
 import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
 import com.example.no_sql_project.Service.TicketService;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class OverviewTicket {
@@ -65,10 +67,19 @@ public class OverviewTicket {
 
     @FXML
     public void initialize() {
-        // Initialize table columns (ensure Ticket properties match these)
+        // Initialize table columns
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        userColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("ticketDate"));
+
+        // Display employee name instead of employee ID
+        userColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getEmployeeName())
+        );
+
+        dateColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTicketDate() != null ?
+                        cellData.getValue().getTicketDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "")
+        );
+
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
@@ -95,7 +106,7 @@ public class OverviewTicket {
         } else if (selectedSortOrder.equals("Low to High")) {
             tickets = ticketService.getTicketsSortedByPriorityAscending();
         } else {
-            tickets = ticketService.getAllTickets(); // Default unsorted
+            tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
         }
         ticketTable.getItems().clear();
         ticketTable.getItems().addAll(tickets);
@@ -105,7 +116,7 @@ public class OverviewTicket {
     private void loadTicketBaseOnRole() {
         ArrayList<Ticket> tickets;
         if (loggedInEmployee.getRole().equals("ServiceDesk")) {
-            tickets = ticketService.getAllTickets();
+            tickets = ticketService.getTicketsWithEmployeeNames();
         } else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
         }
@@ -147,6 +158,10 @@ public class OverviewTicket {
         } else {
             showAlert("Error", "Please select a ticket to close.");
         }
+    }
+    public void loadTicketsWithEmployeeNames() {
+        ArrayList<Ticket> tickets = ticketService.getTicketsWithEmployeeNames();
+        ticketTable.getItems().setAll(tickets);  // Refresh with new data
     }
     @FXML
     public void switchToCreateIncident () {
