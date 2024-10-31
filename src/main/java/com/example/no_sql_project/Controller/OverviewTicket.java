@@ -2,6 +2,8 @@ package com.example.no_sql_project.Controller;
 
 import com.example.no_sql_project.Controller.Createincidentticket;
 import com.example.no_sql_project.Model.Employee;
+import com.example.no_sql_project.Model.Priority;
+import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
 import com.example.no_sql_project.Service.TicketService;
 import javafx.fxml.FXML;
@@ -21,6 +23,12 @@ public class OverviewTicket {
     @FXML
     private Button createIncidentButton;
     @FXML
+    private Button deleteButton;
+    @FXML
+    private Button closeButton;
+    @FXML
+    private Button escalationButton;
+    @FXML
     private TableView<Ticket> ticketTable;
     @FXML
     private TableColumn<Ticket, String> typeColumn;
@@ -34,12 +42,25 @@ public class OverviewTicket {
     private TableColumn<Ticket, String> descriptionColumn;
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
-
+    private Button manageUsersButton;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
 
     public void setLoggedInEmployee(Employee loggedInEmployee) {
         this.loggedInEmployee = loggedInEmployee;
+        initializeDashboardBasedOnRole();
+    }
+
+    private void initializeDashboardBasedOnRole() {
+        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+            // ServiceDesk gets full privileges, including the ability to manage users
+            manageUsersButton.setVisible(true);
+            createIncidentButton.setVisible(true);
+        } else {
+            // Regular employee has limited functionality
+            manageUsersButton.setVisible(false); // Hide user management button for regular employees
+            createIncidentButton.setVisible(true);
+        }
     }
 
     @FXML
@@ -57,20 +78,16 @@ public class OverviewTicket {
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
         }
-    }
-
-    private void loadTicketBaseOnRole() {
-        ArrayList<Ticket> tickets;
-        if (loggedInEmployee.getRole().equals("ServiceDesk")) {
-            tickets = ticketService.getAllTickets();
-        } else {
-            tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
+        if (loggedInEmployee != null && loggedInEmployee.getRole().equals("ServiceDesk")) {
+            deleteButton.setDisable(true);
+            escalationButton.setDisable(true);
+            closeButton.setDisable(true);
         }
-        ticketTable.getItems().clear();
-        ticketTable.getItems().addAll(tickets);
+
+        loadTicketBaseOnRole();
     }
 
-    @FXML
+     @FXML
     private void handleSortTickets() {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
@@ -85,7 +102,55 @@ public class OverviewTicket {
         ticketTable.getItems().addAll(tickets);
     }
 
-    public void switchToCreateIncident() {
+
+    private void loadTicketBaseOnRole() {
+        ArrayList<Ticket> tickets;
+        if (loggedInEmployee.getRole().equals("ServiceDesk")) {
+            tickets = ticketService.getAllTickets();
+        } else {
+            tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
+        }
+        ticketTable.getItems().clear();
+        ticketTable.getItems().addAll(tickets);
+    }
+
+    @FXML
+    private void handleEscalateTicket() {
+        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicket != null) {
+            // Check the current priority and escalate if possible
+            Priority currentPriority = selectedTicket.getPriority();
+            if (currentPriority == Priority.low) {
+                selectedTicket.setPriority(Priority.normal);
+            } else if (currentPriority == Priority.normal) {
+                selectedTicket.setPriority(Priority.high);
+            } else if (currentPriority == Priority.high) {
+                showAlert("Escalate Ticket", "The ticket is already at the highest priority level.");
+                return;  // Exit if no further escalation is possible
+            }
+
+            // Update the ticket in the database
+            ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
+            loadTicketBaseOnRole();  // Refresh the table to show the updated priority
+            showAlert("Success", "The ticket priority has been escalated.");
+        } else {
+            showAlert("Error", "Please select a ticket to escalate.");
+        }
+    }
+    @FXML
+    private void handleCloseTicket() {
+        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicket != null) {
+            selectedTicket.setStatus(Status.closed);  // Update status to closed
+            ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
+            loadTicketBaseOnRole();  // Refresh table
+            showAlert("Success", "The ticket has been closed successfully.");
+        } else {
+            showAlert("Error", "Please select a ticket to close.");
+        }
+    }
+    @FXML
+    public void switchToCreateIncident () {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/Createincidentticket.fxml"));
             Parent root = fxmlLoader.load();
@@ -104,7 +169,6 @@ public class OverviewTicket {
             showAlert("Error", "Unable to load the Create Incident screen.");
         }
     }
-
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -113,3 +177,4 @@ public class OverviewTicket {
         alert.showAndWait();
     }
 }
+

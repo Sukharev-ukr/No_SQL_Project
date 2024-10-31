@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="536.0" prefWidth="710.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
+<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="585.0" prefWidth="714.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
     <children>
         <Label id="overviewTitle" text="Overview Tickets" />
 
@@ -14,6 +14,7 @@
             <children>
                 <TextField fx:id="filterTextField" promptText="Filter by email" />
                 <Button fx:id="createIncidentButton" onAction="#switchToCreateIncident" text="CREATE INCIDENT" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="20.0" prefWidth="129.0" text="Delete Ticket" />
             </children>
         </HBox>
 
@@ -29,7 +30,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <Button text="Sort" onAction="#handleSortTickets" />
+                <Button onAction="#handleSortTickets" text="Sort" />
             </children>
         </HBox>
 
@@ -44,5 +45,11 @@
                 <TableColumn fx:id="priorityColumn" prefWidth="100" text="Priority" />
             </columns>
         </TableView>
+      <HBox prefHeight="120.0" prefWidth="720.0" spacing="15.0">
+         <children>
+            <Button fx:id="escalationButton" mnemonicParsing="false" onAction="#handleEscalateTicket" prefHeight="46.0" prefWidth="131.0" text="Escalation Ticket" />
+            <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseTicket" prefHeight="48.0" prefWidth="151.0" text="Close Ticket" />
+         </children>
+      </HBox>
     </children>
 </VBox>

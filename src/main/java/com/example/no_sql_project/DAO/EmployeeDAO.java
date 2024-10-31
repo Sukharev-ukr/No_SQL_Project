@@ -44,6 +44,17 @@ public class EmployeeDAO extends BaseDAO {
         insertOne(parseDocument(employee));
     }
 
+    public Employee findEmployeeByName(String username) {
+        Document filter = new Document("Name", username);  // Assuming "Name" is the field in the MongoDB collection
+        Document userDocument = collection.find(filter).first();
+
+        if (userDocument != null) {
+            return parseEmployee(userDocument);
+        } else {
+            return null;  // No employee found with the given username
+        }
+    }
+
 
     public void deleteEmployee(ObjectId id){
         deleteOne(id);
