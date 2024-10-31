@@ -20,7 +20,8 @@ public class EmployeeDAO extends BaseDAO {
     private static final String COLLECTION_NAME = "Employees";  // Name of the collection for employees
 
   public EmployeeDAO() {
-        collection = database.getCollection(COLLECTION_NAME);
+      mongoDbConnection.setCollection(COLLECTION_NAME);
+      collection = database.getCollection(COLLECTION_NAME);
     }
 
 

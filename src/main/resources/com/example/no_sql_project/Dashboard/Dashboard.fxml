@@ -6,13 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <!-- Navigation Bar -->
     <HBox alignment="CENTER" spacing="20" styleClass="nav-bar">
         <children>
-            <Button text="Dashboard" styleClass="nav-button" />
-            <Button text="Incident Management" styleClass="nav-button" />
-            <Button text="User Management" styleClass="nav-button" />
+            <Button onMouseClicked="#dashboardClick" text="Dashboard" styleClass="nav-button" />
+            <Button onMouseClicked="#incidentClick" text="Incident Management" styleClass="nav-button" />
+            <Button onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
         </children>
     </HBox>
 
@@ -29,7 +29,7 @@
                     <Hyperlink text="All tickets currently open" />
                     <!-- Pie Chart Circle -->
                     <StackPane styleClass="circle-container">
-                        <Label text="7/15" styleClass="circle-text" />
+                        <Label fx:id="openTicketLabel" text="7/15" styleClass="circle-text" />
                     </StackPane>
                 </children>
             </VBox>
@@ -41,7 +41,7 @@
                     <Label text="These tickets need your immediate attention" wrapText="true" />
                     <!-- Pie Chart Circle -->
                     <StackPane styleClass="circle-container">
-                        <Label text="1" styleClass="circle-text past-deadline" />
+                        <Label fx:id="urgentTickets" text="1" styleClass="circle-text past-deadline" />
                     </StackPane>
                 </children>
             </VBox>

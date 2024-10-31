@@ -12,28 +12,34 @@ import org.bson.types.ObjectId;
 public abstract class BaseDAO {
 
     //the string required to connect to the MongoDB cluster
-    final String CONNECTION_STRING = "mongodb+srv://user:test123@test.wqbk2.mongodb.net/";
     final String DATABASE = "NoSQL_Project";
+
+    Connection mongoDbConnection;
 
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
 
     protected BaseDAO() {
-        mongoClient = new MongoClient(new MongoClientURI(CONNECTION_STRING));
-        database = mongoClient.getDatabase(DATABASE);
+        mongoDbConnection = Connection.getConncetion();
+        mongoDbConnection.setDatabase(DATABASE);
+
+        database = mongoDbConnection.getDatabase();
+        mongoClient = mongoDbConnection.getMongoClient();
+
     }
 
-    protected void insertOne(Document document)
+    protected void insertOne(Document query)
     {
         try {
             //execute queryString targetCollection, Document query
-            collection.insertOne((document));
+            collection.insertOne((query));
             //close connection to the database
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     protected Document findOneQuery(Document query){
         try {

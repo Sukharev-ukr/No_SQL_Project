@@ -47,6 +47,7 @@ public class LoginController {
     private void loadDashboard() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
+            fxmlLoader.setController(new DashboardController());
             Scene dashboardScene = new Scene(fxmlLoader.load());
             Stage currentStage = (Stage) usernameField.getScene().getWindow(); // Get current stage from any UI element
             currentStage.setScene(dashboardScene);

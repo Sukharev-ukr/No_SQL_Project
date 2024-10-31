@@ -21,6 +21,7 @@ public class TicketDAO extends BaseDAO {
     private final String COLLECTION_NAME = "Tickets";
 
     public TicketDAO() {
+        mongoDbConnection.setCollection(COLLECTION_NAME);
         collection = database.getCollection(COLLECTION_NAME);
     }
 
@@ -77,6 +78,16 @@ public class TicketDAO extends BaseDAO {
         updateOneEntry(id, parseDocument(ticket));
     }
 
+    public ArrayList<Ticket> getOpenTickets() {
+        Document filter = new Document("status", Status.open.toString());
+        FindIterable<Document> ticketCollection = findMultiple(filter);
+
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        for (Document document : ticketCollection) {
+            tickets.add(parseTicket(document));
+        }
+        return tickets;
+    }
 
     private Ticket parseTicket(Document data) {
 
