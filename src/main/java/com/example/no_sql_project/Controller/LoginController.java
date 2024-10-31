@@ -49,6 +49,7 @@ public class LoginController {
     private void loadDashboard(String role) {
         try {
             FXMLLoader fxmlLoader;
+
             if (role.equalsIgnoreCase("ServiceDesk")) {
                 // Load the Service Desk Dashboard
                 fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/com/example/no_sql_project/Dashboard/ServiceDeskDashboard.fxml"));
