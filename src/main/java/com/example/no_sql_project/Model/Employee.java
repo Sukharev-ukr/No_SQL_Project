@@ -27,6 +27,7 @@ public class Employee {
         this.privileges = privileges;
     }
 
+
     public ObjectId getId(){
         return id;
     }
@@ -62,5 +63,7 @@ public class Employee {
     public void setPrivileges(String privileges) {
         this.privileges = privileges;
     }
+
+
 }
 

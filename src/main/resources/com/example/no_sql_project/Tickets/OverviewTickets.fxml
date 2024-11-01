@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="536.0" prefWidth="710.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
-
+<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="585.0" prefWidth="714.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
     <children>
         <Label id="overviewTitle" text="Overview Tickets" />
 
-
+        <!-- Existing Filter and Create Incident Button Section -->
         <HBox alignment="CENTER" spacing="15">
             <children>
                 <TextField fx:id="filterTextField" promptText="Filter by email" />
                 <Button fx:id="createIncidentButton" onAction="#switchToCreateIncident" text="CREATE INCIDENT" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="20.0" prefWidth="129.0" text="Delete Ticket" />
             </children>
         </HBox>
 
-<!--TODO: make the table view columns the same as the fields in the ticket collection-->
+        <!-- New Sorting Controls -->
+        <HBox alignment="CENTER" spacing="15">
+            <children>
+                <Label text="Sort by Priority: " />
+                <ChoiceBox fx:id="prioritySortChoiceBox" prefWidth="150">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="High to Low" />
+                            <String fx:value="Low to High" />
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+                <Button onAction="#handleSortTickets" text="Sort" />
+            </children>
+        </HBox>
+
+        <!-- TableView for Tickets -->
         <TableView fx:id="ticketsTable" prefHeight="402.0" prefWidth="720.0">
             <columns>
                 <TableColumn fx:id="typeColumn" prefWidth="150" text="Type" />
@@ -24,8 +42,14 @@
                 <TableColumn fx:id="dateColumn" prefWidth="100" text="Date" />
                 <TableColumn fx:id="statusColumn" prefWidth="100" text="Status" />
                 <TableColumn fx:id="descriptionColumn" prefWidth="100" text="Description" />
-            <TableColumn fx:id="priorityColumn" prefWidth="100" text="Description" />
+                <TableColumn fx:id="priorityColumn" prefWidth="100" text="Priority" />
             </columns>
         </TableView>
+      <HBox prefHeight="120.0" prefWidth="720.0" spacing="15.0">
+         <children>
+            <Button fx:id="escalationButton" mnemonicParsing="false" onAction="#handleEscalateTicket" prefHeight="46.0" prefWidth="131.0" text="Escalation Ticket" />
+            <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseTicket" prefHeight="48.0" prefWidth="151.0" text="Close Ticket" />
+         </children>
+      </HBox>
     </children>
 </VBox>
