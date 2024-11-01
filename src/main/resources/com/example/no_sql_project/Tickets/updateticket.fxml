@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@createincidentticket.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.Updateticket">
+    <children>
+        <!-- Title Label -->
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Update Ticket" />
+
+        <!-- Form Fields Grid -->
+        <GridPane alignment="CENTER" hgap="10" vgap="15">
+            <children>
+                <Label text="Date/time reported:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <DatePicker fx:id="datePickerReported" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Type of incident:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <ComboBox fx:id="incidentTypeComboBox" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="Reported by user:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <ComboBox fx:id="reportedByComboBox" promptText="Select user" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <ComboBox fx:id="priorityComboBox" promptText="Select priority" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <TextArea fx:id="descriptionArea" prefHeight="100" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            </children>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+
+        <!-- Buttons -->
+        <HBox alignment="CENTER" spacing="15">
+            <children>
+                <Button fx:id="cancelButton" onAction="#handleCancel" text="CANCEL" />
+                <Button fx:id="updateTicketButton" onAction="#handleUpdateTicket" text="UPDATE TICKET" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
