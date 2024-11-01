@@ -43,7 +43,6 @@ public class DashboardController implements Initializable {
 
         int urgentTicketsCount = 0;
         for (Ticket ticket : openTickets) {
-            //System.out.println(MessageFormat.format("{0}{1}{2}{3}",ticket.getStatus(),ticket.getTicketDate(),ticket.getDescription(),ticket.getPriority()));
             if ( ChronoUnit.DAYS.between(ticket.getTicketDate(), LocalDateTime.now())>14) {
                 urgentTicketsCount++;
             }
