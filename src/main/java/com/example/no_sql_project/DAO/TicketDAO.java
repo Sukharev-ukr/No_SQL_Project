@@ -5,7 +5,7 @@ import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
 import com.example.no_sql_project.Model.Type;
 import com.mongodb.DBCallback;
-import com.mongodb.client.ClientSession;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import org.bson.BsonArray;
 import org.bson.Document;
@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import java.util.Arrays;
+
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -136,7 +139,7 @@ public class TicketDAO extends BaseDAO {
         try {
             return new Ticket(
                     data.getObjectId("_id"),
-                    data.getString("Employee_ID"),
+                    data.getObjectId("Employee_ID"),
                     Ticket.parseType(data.getString("Type")), // Change from Type.valueOf to parseType here
                     Priority.valueOf(data.getString("Priority")),
                     Status.valueOf(data.getString("Status")),
@@ -162,5 +165,43 @@ public class TicketDAO extends BaseDAO {
         data.put("Date", ticket.getTicketDate().toString()); //convert to standard string
         data.put("Description", ticket.getDescription());
         return data;
+    }
+
+    public ArrayList<Ticket> getTicketsWithEmployeeNames() {
+        ArrayList<Ticket> tickets = new ArrayList<>();
+
+        // Aggregation pipeline with $lookup to join Tickets with Employees, excluding _id
+        AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
+                new Document("$lookup", new Document()
+                        .append("from", "Employees")
+                        .append("localField", "Employee_ID")
+                        .append("foreignField", "_id")
+                        .append("as", "employeeInfo")
+                ),
+                new Document("$unwind", "$employeeInfo"),  // Flatten the joined array
+                new Document("$project", new Document()  // Select the fields you need
+                        .append("Type", 1)
+                        .append("Priority", 1)
+                        .append("Status", 1)
+                        .append("Date", 1)
+                        .append("Description", 1)
+                        .append("employeeName", "$employeeInfo.Name")  // Get Name from employeeInfo
+                )
+        ));
+
+        // Parse the result into Ticket objects
+        for (Document document : results) {
+            Ticket ticket = new Ticket(
+                    document.getString("employeeName"),  // Employee name from lookup
+                    Ticket.parseType(document.getString("Type")),
+                    Priority.valueOf(document.getString("Priority")),
+                    Status.valueOf(document.getString("Status")),
+                    LocalDateTime.parse(document.getString("Date")),
+                    document.getString("Description")
+            );
+            tickets.add(ticket);
+        }
+
+        return tickets;
     }
 }

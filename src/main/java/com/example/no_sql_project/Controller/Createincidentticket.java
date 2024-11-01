@@ -77,10 +77,13 @@ public class Createincidentticket {
             Priority priority = priorityComboBox.getValue();
             Type type = incidentTypeComboBox.getValue();
             String description = descriptionArea.getText();
-            Ticket newTicket = new Ticket(userId.toString(), type, priority, Status.open, ticketDate, description);
+            String selectedUser = reportedByComboBox.getValue();
+            ObjectId selectedUserId = userIdMap.get(selectedUser);
+            Ticket newTicket = new Ticket(selectedUserId, type, priority, Status.open, ticketDate, description);
             ticketService.addTickets(newTicket);
             showSuccessAlert("Ticket Created", "Ticker has been created successfully");
             clearFormFields();
+            switchToTicketOverview();
         }
         else {
             showAlert("Create Fail", "Please Fill In All Of Required Fields");
@@ -111,6 +114,26 @@ public class Createincidentticket {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Unable to load the Overview Ticket screen.");
+        }
+    }
+    private void switchToTicketOverview() {
+        try {
+            // Load the TicketOverview scene
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/OverviewTicket.fxml"));
+            Parent root = fxmlLoader.load();
+
+            // Get the controller for TicketOverview and call method to refresh table
+            OverviewTicket overviewController = fxmlLoader.getController();
+            overviewController.loadTicketsWithEmployeeNames();  // Refresh table in TicketOverview
+
+            // Set the scene on the current stage
+            Stage currentStage = (Stage) submitTicketButton.getScene().getWindow();
+            currentStage.setScene(new Scene(root));
+            currentStage.setTitle("Ticket Overview");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the Ticket Overview screen.");
         }
     }
 
