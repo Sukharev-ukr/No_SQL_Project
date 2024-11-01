@@ -17,10 +17,16 @@ import java.util.ArrayList;
 
 public class EmployeeDAO extends BaseDAO {
 
+    final String DATABASE = "NoSQL_Project";
     private static final String COLLECTION_NAME = "Employees";  // Name of the collection for employees
 
   public EmployeeDAO() {
-        collection = database.getCollection(COLLECTION_NAME);
+      if (mongoDbConnection.getDatabase() == null) {
+          mongoDbConnection.setDatabase(DATABASE);
+      }
+      database = mongoDbConnection.getDatabase();
+      mongoDbConnection.setCollection(COLLECTION_NAME);
+      collection = database.getCollection(COLLECTION_NAME);
     }
 
 

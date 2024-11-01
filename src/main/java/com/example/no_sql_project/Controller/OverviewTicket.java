@@ -99,6 +99,7 @@ public class OverviewTicket {
             escalationButton.setDisable(true);
             closeButton.setDisable(true);
         }
+
         loadTicketBaseOnRole();
         loadAllTickets();
         setupFilter();
