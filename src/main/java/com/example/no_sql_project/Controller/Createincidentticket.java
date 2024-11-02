@@ -79,7 +79,7 @@ public class Createincidentticket {
             String description = descriptionArea.getText();
             String selectedUser = reportedByComboBox.getValue();
             ObjectId selectedUserId = userIdMap.get(selectedUser);
-            Ticket newTicket = new Ticket(selectedUserId, type, priority, Status.open, ticketDate, description);
+            Ticket newTicket = new Ticket(selectedUserId.toHexString(), type, priority, Status.open, ticketDate, description);
             ticketService.addTickets(newTicket);
             showSuccessAlert("Ticket Created", "Ticker has been created successfully");
             clearFormFields();
