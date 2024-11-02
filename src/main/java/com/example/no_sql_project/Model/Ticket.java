@@ -117,4 +117,12 @@ public class Ticket {
         }
         throw new IllegalArgumentException("Unknown Type: " + typeString);
     }
+
+    //Fred -- transferTicket
+    public void transferTicket(ObjectId newEmployeeId, String newEmployeeName) {
+        this.employeeId = newEmployeeId;
+        this.employeeName = newEmployeeName;
+    }
+
+
 }
