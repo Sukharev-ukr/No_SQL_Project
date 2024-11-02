@@ -10,9 +10,9 @@
     <!-- Navigation Bar -->
     <HBox alignment="CENTER" spacing="20" styleClass="nav-bar">
         <children>
-            <Button onMouseClicked="#dashboardClick" text="Dashboard" styleClass="nav-button" />
-            <Button onMouseClicked="#incidentClick" text="Incident Management" styleClass="nav-button" />
-            <Button onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
+            <Button fx:id="dashboardButton" onMouseClicked="#dashboardClick" text="Dashboard" styleClass="nav-button" />
+            <Button visible="false" fx:id="incidentButton" onMouseClicked="#incidentClick" text="Incident Management" styleClass="nav-button" />
+            <Button visible="false" fx:id="userButton" onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
         </children>
     </HBox>
 
@@ -35,7 +35,7 @@
             </VBox>
 
             <!-- Incidents Past Deadline Box -->
-            <VBox spacing="10" alignment="CENTER" styleClass="stats-box past-deadline">
+            <VBox fx:id="pastDeadlineBox" visible="false" spacing="10" alignment="CENTER" styleClass="stats-box past-deadline">
                 <children>
                     <Label text="Incidents past deadline" styleClass="box-title" />
                     <Label text="These tickets need your immediate attention" wrapText="true" />

@@ -27,7 +27,6 @@ public class Ticket {
     }
     // creating a new Employee object that doesn't yet exist in the DB
     public Ticket(String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
-
         this.description = description;
         this.ticketDate = ticketDate;
         this.status = status;
