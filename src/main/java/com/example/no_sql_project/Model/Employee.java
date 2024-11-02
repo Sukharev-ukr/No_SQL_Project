@@ -4,7 +4,7 @@ package com.example.no_sql_project.Model;
 import org.bson.types.ObjectId;
 
 public class Employee {
-    private ObjectId id;;
+    private ObjectId id;
     private String name;
     private String password;
     private String role;
@@ -63,6 +63,5 @@ public class Employee {
     public void setPrivileges(String privileges) {
         this.privileges = privileges;
     }
-
 }
 
