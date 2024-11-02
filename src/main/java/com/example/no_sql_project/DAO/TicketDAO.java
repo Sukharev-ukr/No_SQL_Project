@@ -92,9 +92,6 @@ public class TicketDAO extends BaseDAO {
             archiveDoa.insertManyIntoArchive(listTickets);
             deleteMany(filter);
         }
-
-
-
     }
 
     // Utility method to parse tickets from FindIterable
@@ -167,41 +164,43 @@ public class TicketDAO extends BaseDAO {
         return data;
     }
 
+
     public ArrayList<Ticket> getTicketsWithEmployeeNames() {
         ArrayList<Ticket> tickets = new ArrayList<>();
 
-        // Aggregation pipeline with $lookup to join Tickets with Employees, excluding _id
-        AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
-                new Document("$lookup", new Document()
-                        .append("from", "Employees")
-                        .append("localField", "Employee_ID")
-                        .append("foreignField", "_id")
-                        .append("as", "employeeInfo")
-                ),
-                new Document("$unwind", "$employeeInfo"),  // Flatten the joined array
-                new Document("$project", new Document()  // Select the fields you need
-                        .append("Type", 1)
-                        .append("Priority", 1)
-                        .append("Status", 1)
-                        .append("Date", 1)
-                        .append("Description", 1)
-                        .append("employeeName", "$employeeInfo.Name")  // Get Name from employeeInfo
-                )
-        ));
+        try {
+            AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
+                    new Document("$lookup", new Document()
+                            .append("from", "Employees")
+                            .append("let", new Document("id", new Document("$toObjectId", "$Employee_ID")))
+                            .append("pipeline", Arrays.asList(
+                                    new Document("$match", new Document("$expr", new Document("$eq", Arrays.asList("$_id", "$$id"))))
+                            ))
+                            .append("as", "Employee")),
+                    new Document("$addFields", new Document("name", new Document("$arrayElemAt", Arrays.asList("$Employee.Name", 0))))
+            )).maxTime(60000, java.util.concurrent.TimeUnit.MILLISECONDS).allowDiskUse(true);
 
-        // Parse the result into Ticket objects
-        for (Document document : results) {
-            Ticket ticket = new Ticket(
-                    document.getString("employeeName"),  // Employee name from lookup
-                    Ticket.parseType(document.getString("Type")),
-                    Priority.valueOf(document.getString("Priority")),
-                    Status.valueOf(document.getString("Status")),
-                    LocalDateTime.parse(document.getString("Date")),
-                    document.getString("Description")
-            );
-            tickets.add(ticket);
+
+            for (Document document : results) {
+                Ticket ticket = parseTicket(document);
+                ticket.setEmployeeName(document.getString("name"));
+                tickets.add(ticket);
+            }
+            return tickets;
+        } catch (Exception e) {
+            System.err.println("Error during aggregation: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        return tickets;
+        return null;
+    }
+
+    private LocalDateTime parseDate(String dateStr) {
+        try {
+            return LocalDateTime.parse(dateStr);
+        } catch (Exception e) {
+            System.out.println("Date parsing error: " + e.getMessage());
+            return LocalDateTime.now();  // Use current date as fallback
+        }
     }
 }
