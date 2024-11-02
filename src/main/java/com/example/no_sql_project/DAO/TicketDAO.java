@@ -7,22 +7,41 @@ import com.example.no_sql_project.Model.Type;
 import com.mongodb.DBCallback;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
+import org.bson.BsonArray;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+
+import javax.print.Doc;
+
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import java.util.Arrays;
+
 
 import static com.mongodb.client.model.Filters.eq;
 
 public class TicketDAO extends BaseDAO {
-    // Name of the collection for Tickets
+
+    final String DATABASE = "NoSQL_Project";
     private final String COLLECTION_NAME = "Tickets";
 
+//    age for a ticket when its eligible to be archived, measured in days
+    private final int TICKET_ARCHIVE_DATE = 720;
+
     public TicketDAO() {
+        if (mongoDbConnection.getDatabase() == null) {
+            mongoDbConnection.setDatabase(DATABASE);
+        }
+        database = mongoDbConnection.getDatabase();
+        mongoDbConnection.setCollection(COLLECTION_NAME);
         collection = database.getCollection(COLLECTION_NAME);
     }
 
@@ -53,6 +72,31 @@ public class TicketDAO extends BaseDAO {
         return parseTicketList(ticketCollection);
     }
 
+    public ArrayList<Ticket> getOlderThan(String date) {
+        Document filter = new Document("Date",new Document("$lt",date));
+        FindIterable<Document> ticketCollection = findMultiple(filter);
+        return parseTicketList(ticketCollection);
+    }
+
+    public void archiveTickets(){
+        ArchiveDoa archiveDoa = new ArchiveDoa();
+        String cutOffDate = archiveDoa.setCutOffDate(TICKET_ARCHIVE_DATE);
+
+        Document filter = new Document("Date",new Document("$lt",cutOffDate));
+
+        FindIterable<Document> ticketCollection = findMultiple(filter);
+        ArrayList<Document> listTickets = new ArrayList<>();
+        for (Document document : ticketCollection) { listTickets.add(document); }
+        System.out.println(mongoDbConnection.database.getName());
+        if (!listTickets.isEmpty()) {
+            archiveDoa.insertManyIntoArchive(listTickets);
+            deleteMany(filter);
+        }
+
+
+
+    }
+
     // Utility method to parse tickets from FindIterable
     private ArrayList<Ticket> parseTicketList(FindIterable<Document> ticketCollection) {
         ArrayList<Ticket> tickets = new ArrayList<>();
@@ -79,6 +123,16 @@ public class TicketDAO extends BaseDAO {
         updateOneEntry(id, parseDocument(ticket));
     }
 
+    public ArrayList<Ticket> getOpenTickets() {
+        Document filter = new Document("status", Status.open.toString());
+        FindIterable<Document> ticketCollection = findMultiple(filter);
+
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        for (Document document : ticketCollection) {
+            tickets.add(parseTicket(document));
+        }
+        return tickets;
+    }
 
     private Ticket parseTicket(Document data) {
 

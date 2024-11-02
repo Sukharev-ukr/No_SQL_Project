@@ -24,5 +24,11 @@ public enum Type {
         public String toString() {
             return "Maintenance";
         }
+    },
+    UserSupport {
+        @Override
+        public String toString() {
+            return "User Support";
+        }
     }
 }

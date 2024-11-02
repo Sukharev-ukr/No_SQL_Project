@@ -6,34 +6,49 @@ import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.BsonArray;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+
+import javax.print.Doc;
+import java.util.ArrayList;
 
 public abstract class BaseDAO {
 
-    //the string required to connect to the MongoDB cluster
-    final String CONNECTION_STRING = "mongodb+srv://user:test123@test.wqbk2.mongodb.net/";
-    final String DATABASE = "NoSQL_Project";
+
+    Connection mongoDbConnection;
 
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
 
     protected BaseDAO() {
-        mongoClient = new MongoClient(new MongoClientURI(CONNECTION_STRING));
-        database = mongoClient.getDatabase(DATABASE);
+        mongoDbConnection = Connection.getConncetion();
+        mongoClient = mongoDbConnection.getMongoClient();
+
     }
 
-    protected void insertOne(Document document)
+    protected void insertOne(Document query)
     {
         try {
             //execute queryString targetCollection, Document query
-            collection.insertOne((document));
+            collection.insertOne((query));
             //close connection to the database
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    protected void insertMany(ArrayList<Document> query){
+        try {
+            //execute queryString targetCollection, Document query
+            collection.insertMany(query);
+            //close connection to the database
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     protected Document findOneQuery(Document query){
         try {
@@ -47,7 +62,7 @@ public abstract class BaseDAO {
     protected FindIterable<Document> findMultiple(Document query)
     {
         try {
-            return collection.find((query));
+            return collection.find(query);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -75,6 +90,13 @@ public abstract class BaseDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    protected void deleteMany(Document query){
+        try {
+            collection.deleteMany(query);
+        }catch (Exception e)
+        { e.printStackTrace();}
     }
 
     protected Document executeAggregation()
