@@ -107,7 +107,7 @@ public class Updateticket {
             currentTicket.setPriority(priority);
             currentTicket.setType(type);
             currentTicket.setDescription(description);
-            currentTicket.setEmployeeId(selectedUserId);
+            currentTicket.setEmployeeId(selectedUserId.toHexString());
 
             ticketService.updateTicket(currentTicket.getId(), currentTicket);
             showSuccessAlert("Ticket Updated", "Ticket has been updated successfully.");

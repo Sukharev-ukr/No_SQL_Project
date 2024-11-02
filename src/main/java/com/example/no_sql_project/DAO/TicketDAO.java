@@ -139,7 +139,7 @@ public class TicketDAO extends BaseDAO {
         try {
             return new Ticket(
                     data.getObjectId("_id"),
-                    data.getObjectId("Employee_ID"),
+                    data.getString("Employee_ID"), //I change back From ObjectID to String
                     Ticket.parseType(data.getString("Type")), // Change from Type.valueOf to parseType here
                     Priority.valueOf(data.getString("Priority")),
                     Status.valueOf(data.getString("Status")),

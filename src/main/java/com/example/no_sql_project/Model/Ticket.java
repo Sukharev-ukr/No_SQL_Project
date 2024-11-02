@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class Ticket {
     ObjectId id;
-    ObjectId employeeId;
+    String employeeId; //Swap back to String
     String employeeName;
     Priority priority;
     Status status;
@@ -16,7 +16,7 @@ public class Ticket {
 
     // Constructors
     // creating an object that already exists in the database
-    public Ticket(ObjectId id,ObjectId employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+    public Ticket(ObjectId id,String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
         this.id = id;
         this.description = description;
         this.ticketDate = ticketDate;
@@ -26,7 +26,7 @@ public class Ticket {
         this.employeeId = employeeId;
     }
     // creating a new Employee object that doesn't yet exist in the DB
-    public Ticket(ObjectId employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
+    public Ticket(String employeeId,Type type, Priority priority, Status status, LocalDateTime ticketDate, String  description) {
 
         this.description = description;
         this.ticketDate = ticketDate;
@@ -34,15 +34,6 @@ public class Ticket {
         this.employeeId = employeeId;
         this.type = type;
         this.priority = priority;
-    }
-    // Constructor without id
-    public Ticket(String employeeName, Type type, Priority priority, Status status, LocalDateTime ticketDate, String description) {
-        this.employeeName = employeeName;
-        this.type = type;
-        this.priority = priority;
-        this.status = status;
-        this.ticketDate = ticketDate;
-        this.description = description;
     }
 
     public String getEmployeeName() {
@@ -102,10 +93,10 @@ public class Ticket {
         }
     }
 
-    public ObjectId getEmployeeId() {
+    public String getEmployeeId() {// I change Back To String employeeID
         return employeeId;
     }
-    public void setEmployeeId(ObjectId employeeId) {
+    public void setEmployeeId(String employeeId) {  // I change Back To String employeeID
         this.employeeId = employeeId;
     }
     // Helper method to convert a string to the appropriate Type enum
@@ -118,8 +109,8 @@ public class Ticket {
         throw new IllegalArgumentException("Unknown Type: " + typeString);
     }
 
-    //Fred -- transferTicket
-    public void transferTicket(ObjectId newEmployeeId, String newEmployeeName) {
+    //Fred -- transferTicket -- Robben Change it back to String EmployeeID to adapt varaiable
+    public void transferTicket(String newEmployeeId, String newEmployeeName) {
         this.employeeId = newEmployeeId;
         this.employeeName = newEmployeeName;
     }
