@@ -23,7 +23,12 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
-    private EmployeeDAO employeeDAO = new EmployeeDAO(); // DAO for interacting with MongoDB
+    private EmployeeDAO employeeDAO; // DAO for interacting with MongoDB
+
+
+    public LoginController(){
+        employeeDAO = new EmployeeDAO();
+    }
 
     @FXML
     protected void handleLoginButtonAction(ActionEvent event) {
@@ -36,40 +41,36 @@ public class LoginController {
         }
 
         // Check credentials in MongoDB
-        Document user = employeeDAO.findEmployeeByNameAndPassword(username, password);
+        Employee user = employeeDAO.findEmployeeByNameAndPassword(username, password);
 
         if (user != null) {
-            String role = user.getString("Role"); // Assuming MongoDB contains a field 'Role' for the user
-            loadDashboard(role); // Pass the role to determine which dashboard to load
+            loadDashboard(user); // Pass the role to determine which dashboard to load
         } else {
             showAlert("Login Failed", "Invalid username or password.");
         }
     }
 
-    private void loadDashboard(String role) {
+    private void loadDashboard(Employee user) {
         try {
             FXMLLoader fxmlLoader;
-            if (role.equalsIgnoreCase("ServiceDesk")) {
-                // Load the Service Desk Dashboard
-                fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/com/example/no_sql_project/Dashboard/ServiceDeskDashboard.fxml"));
-            } else {
-                // Load the Employee Dashboard
-                fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/com/example/no_sql_project/Dashboard/EmployeeDashboard.fxml"));
-            }
+            fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
+            DashboardController controller = new DashboardController(user);
+            fxmlLoader.setController(controller);
             Scene dashboardScene = new Scene(fxmlLoader.load());
             Stage currentStage = (Stage) usernameField.getScene().getWindow(); // Get current stage from any UI element
             currentStage.setScene(dashboardScene);
             currentStage.setTitle("Dashboard");
 
-            // Pass the logged-in user information to the controller if needed
-            OverviewTicket overviewController = fxmlLoader.getController();
-            Employee loggedInEmployee = employeeDAO.findEmployeeByName(usernameField.getText());
-
-            if (loggedInEmployee != null) {
-                overviewController.setLoggedInEmployee(loggedInEmployee);
-            } else {
-                showAlert("Error", "Unable to find the logged-in employee.");
-            }
+//                //FIXME: causes error on startup
+//            // Pass the logged-in user information to the controller if needed
+//            OverviewTicket overviewController = fxmlLoader.getController();
+//            Employee loggedInEmployee = user;
+//
+//            if (loggedInEmployee != null) {
+//                overviewController.setLoggedInEmployee(loggedInEmployee);
+//            } else {
+//                showAlert("Error", "Unable to find the logged-in employee.");
+//            }
 
         } catch (IOException e) {
             e.printStackTrace();

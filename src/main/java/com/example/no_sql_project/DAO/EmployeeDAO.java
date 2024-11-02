@@ -59,7 +59,8 @@ public class EmployeeDAO extends BaseDAO {
     public void deleteEmployee(ObjectId id){
         deleteOne(id);
   }
-    public Document findEmployeeByNameAndPassword(String name, String plainPassword) {
+
+    public Employee findEmployeeByNameAndPassword(String name, String plainPassword) {
         // Hash the user's input password to match the database hash
         String hashedPassword = PasswordUtils.hashPassword(plainPassword);
 
@@ -67,7 +68,7 @@ public class EmployeeDAO extends BaseDAO {
         Document query = new Document("Name", name).append("Password", hashedPassword);
 
         // Use the BaseDAO findQuery method to search for the user in the database
-        return findOneQuery(query);
+        return parseEmployee(findOneQuery(query));
     }
 
     public void updateEmployee(ObjectId id, Employee employee){

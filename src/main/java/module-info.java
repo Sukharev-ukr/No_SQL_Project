@@ -5,6 +5,7 @@ module com.example.no_sql_project {
     requires javafx.base;
     requires javafx.graphics;
     requires java.desktop;
+    requires java.management;
 
     // Export the root package to make it accessible to JavaFX for launching
     exports com.example.no_sql_project;
