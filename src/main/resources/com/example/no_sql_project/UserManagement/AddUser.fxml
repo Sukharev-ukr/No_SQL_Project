@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@usermanagement.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@usermanagement.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.AddEmployeeController">
     <!-- Title Label -->
-    <Label text="Create new user" styleClass="main-title" />
+    <Label styleClass="main-title" text="Create new user" />
 
     <!-- Form Fields Grid -->
     <GridPane alignment="CENTER" hgap="10" vgap="15">
@@ -23,25 +19,30 @@
             <Label text="Type of user:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
             <ComboBox fx:id="userTypeComboBox" promptText="Select user type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-            <Label text="E-mail address:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Location/branch:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <ComboBox fx:id="locationComboBox" promptText="Select location" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label text="Phone number:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-
-            <Label text="Location/branch:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-            <ComboBox fx:id="locationComboBox" promptText="Select location" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-
-            <Label text="Send password?" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-            <CheckBox fx:id="sendPasswordCheckbox" text="yes, a password e-mail will be sent to the user" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Send password?" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <CheckBox fx:id="sendPasswordCheckbox" text="yes, a password e-mail will be sent to the user" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         </children>
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
     <!-- Buttons -->
-    <HBox spacing="15" alignment="CENTER">
+    <HBox alignment="CENTER" spacing="15">
         <children>
-            <Button fx:id="cancelButton" text="CANCEL" styleClass="cancel-button" />
-            <Button fx:id="addUserButton" text="ADD USER" styleClass="add-user-button" />
+            <Button fx:id="cancelButton" styleClass="cancel-button" text="CANCEL" />
+            <Button fx:id="addUserButton" styleClass="add-user-button" text="ADD USER" />
         </children>
     </HBox>
 </VBox>

@@ -6,6 +6,9 @@ import com.example.no_sql_project.Model.Priority;
 import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
 import com.example.no_sql_project.Service.TicketService;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class OverviewTicket {
@@ -22,6 +26,8 @@ public class OverviewTicket {
     private ChoiceBox<String> prioritySortChoiceBox;
     @FXML
     private Button createIncidentButton;
+    @FXML
+    private TextField filterTextField;
     @FXML
     private Button deleteButton;
     @FXML
@@ -45,6 +51,7 @@ public class OverviewTicket {
     private Button manageUsersButton;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
+    private ObservableList<Ticket> allTickets;
 
     public void setLoggedInEmployee(Employee loggedInEmployee) {
         this.loggedInEmployee = loggedInEmployee;
@@ -65,10 +72,19 @@ public class OverviewTicket {
 
     @FXML
     public void initialize() {
-        // Initialize table columns (ensure Ticket properties match these)
+        // Initialize table columns
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        userColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("ticketDate"));
+
+        // Display employee name instead of employee ID
+        userColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getEmployeeName())
+        );
+
+        dateColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTicketDate() != null ?
+                        cellData.getValue().getTicketDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "")
+        );
+
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
@@ -85,6 +101,8 @@ public class OverviewTicket {
         }
 
         loadTicketBaseOnRole();
+        loadAllTickets();
+        setupFilter();
     }
 
      @FXML
@@ -96,7 +114,7 @@ public class OverviewTicket {
         } else if (selectedSortOrder.equals("Low to High")) {
             tickets = ticketService.getTicketsSortedByPriorityAscending();
         } else {
-            tickets = ticketService.getAllTickets(); // Default unsorted
+            tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
         }
         ticketTable.getItems().clear();
         ticketTable.getItems().addAll(tickets);
@@ -106,7 +124,7 @@ public class OverviewTicket {
     private void loadTicketBaseOnRole() {
         ArrayList<Ticket> tickets;
         if (loggedInEmployee.getRole().equals("ServiceDesk")) {
-            tickets = ticketService.getAllTickets();
+            tickets = ticketService.getTicketsWithEmployeeNames();
         } else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
         }
@@ -114,6 +132,7 @@ public class OverviewTicket {
         ticketTable.getItems().addAll(tickets);
     }
 
+    //////////////////////////////////////// close ticket and escalate ticket
     @FXML
     private void handleEscalateTicket() {
         Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
@@ -149,6 +168,12 @@ public class OverviewTicket {
             showAlert("Error", "Please select a ticket to close.");
         }
     }
+    public void loadTicketsWithEmployeeNames() {
+        ArrayList<Ticket> tickets = ticketService.getTicketsWithEmployeeNames();
+        ticketTable.getItems().setAll(tickets);  // Refresh with new data
+    }
+
+    ////////////////////////////////////////////////////////// Switch To Other Screen
     @FXML
     public void switchToCreateIncident () {
         try {
@@ -169,6 +194,64 @@ public class OverviewTicket {
             showAlert("Error", "Unable to load the Create Incident screen.");
         }
     }
+    public void switchToUpdateTicket() {
+        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
+
+        if (selectedTicket != null) {
+            try {
+                // Load the UpdateTicket FXML file
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/updateticket.fxml"));
+                Parent root = fxmlLoader.load();
+
+                // Get the UpdateTicketController and set the current ticket
+                Updateticket updateTicketController = fxmlLoader.getController();
+                updateTicketController.setCurrentTicket(selectedTicket);  // Pass the selected ticket to the UpdateTicketController
+                updateTicketController.setLoggedInUsername(loggedInEmployee);
+
+                // Create a new stage for the update ticket screen
+                Stage stage = new Stage();
+                stage.setTitle("Update Ticket");
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "Unable to load the Update Ticket screen.");
+            }
+        } else {
+            // Show an alert if no ticket is selected
+            showAlert("No Selection", "Please select a ticket to update.");
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////// Filter Ticket By UserName
+    private void loadAllTickets() {
+        allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
+        ticketTable.setItems(allTickets);
+    }
+
+    private void setupFilter() {
+        filterTextField.setOnKeyReleased(event -> filterTickets());
+    }
+
+    private void filterTickets() {
+        String filterText = filterTextField.getText().toLowerCase().trim();
+
+        if (filterText.isEmpty()) {
+            // If the filter is empty, display all tickets
+            ticketTable.setItems(allTickets);
+        } else {
+            // Filter tickets based on the entered username
+            ObservableList<Ticket> filteredTickets = FXCollections.observableArrayList();
+            for (Ticket ticket : allTickets) {
+                if (ticket.getEmployeeName() != null && ticket.getEmployeeName().toLowerCase().contains(filterText)) {
+                    filteredTickets.add(ticket);
+                }
+            }
+            ticketTable.setItems(filteredTickets);
+        }
+    }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

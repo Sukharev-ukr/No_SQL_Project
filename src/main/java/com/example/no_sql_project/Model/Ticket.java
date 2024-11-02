@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 
 public class Ticket {
     ObjectId id;
-    String employeeId;
+    String employeeId; //Swap back to String
+    String employeeName;
     Priority priority;
     Status status;
     LocalDateTime ticketDate;
@@ -32,6 +33,10 @@ public class Ticket {
         this.employeeId = employeeId;
         this.type = type;
         this.priority = priority;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
     }
 
     public ObjectId getId() {
@@ -87,10 +92,10 @@ public class Ticket {
         }
     }
 
-    public String getEmployeeId() {
+    public String getEmployeeId() {// I change Back To String employeeID
         return employeeId;
     }
-    public void setEmployeeId(String employeeId) {
+    public void setEmployeeId(String employeeId) {  // I change Back To String employeeID
         this.employeeId = employeeId;
     }
     // Helper method to convert a string to the appropriate Type enum
@@ -102,4 +107,12 @@ public class Ticket {
         }
         throw new IllegalArgumentException("Unknown Type: " + typeString);
     }
+
+    //Fred -- transferTicket -- Robben Change it back to String EmployeeID to adapt varaiable
+    public void transferTicket(String newEmployeeId, String newEmployeeName) {
+        this.employeeId = newEmployeeId;
+        this.employeeName = newEmployeeName;
+    }
+
+
 }

@@ -1,40 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@usermanagement.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" spacing="15" stylesheets="@usermanagement.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.EmployeeManagementController">
     <!-- Navigation Bar -->
     <HBox alignment="CENTER" spacing="20" styleClass="nav-bar">
         <children>
-            <Button text="Dashboard" styleClass="nav-button" />
-            <Button text="Incident Management" styleClass="nav-button" />
-            <Button text="User Management" styleClass="nav-button" />
+            <Button styleClass="nav-button" text="Dashboard" />
+            <Button styleClass="nav-button" text="Incident Management" />
+            <Button styleClass="nav-button" text="User Management" />
         </children>
     </HBox>
 
     <!-- Title -->
-    <Label text="User management" styleClass="main-title" />
+    <Label styleClass="main-title" text="User management" />
 
     <!-- Search Bar and Add User Button -->
-    <HBox spacing="20" alignment="CENTER">
+    <HBox alignment="CENTER" spacing="20">
         <children>
             <TextField fx:id="filterTextField" promptText="Filter by email" styleClass="filter-text-field" />
-            <Button fx:id="addUserButton" text="+ ADD NEW USER" styleClass="add-user-button" />
+            <Button fx:id="addUserButton" onAction="#addUser" styleClass="add-user-button" text="+ ADD NEW USER" />
         </children>
     </HBox>
 
     <!-- User Table -->
     <TableView fx:id="userTable" prefHeight="400" prefWidth="700">
         <columns>
-            <TableColumn text="ID" fx:id="idColumn" prefWidth="50" />
-            <TableColumn text="Email" fx:id="emailColumn" prefWidth="200" />
-            <TableColumn text="First Name" fx:id="firstNameColumn" prefWidth="150" />
-            <TableColumn text="Last Name" fx:id="lastNameColumn" prefWidth="150" />
-            <TableColumn text="# tickets" fx:id="ticketsColumn" prefWidth="100" />
+            <TableColumn fx:id="idColumn" prefWidth="183.0" text="ID" />
+            <TableColumn fx:id="fullNameColumn" prefWidth="238.0" text="Full Name" />
+            <TableColumn fx:id="roleColumn" prefWidth="122.0" text="Role" />
+            <TableColumn fx:id="ticketsColumn" prefWidth="156.0" text="# tickets" />
         </columns>
     </TableView>
 </VBox>

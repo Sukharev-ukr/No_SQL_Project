@@ -59,7 +59,6 @@ public class DashboardController implements Initializable {
             initializeAdmin();
         }else{
             initializeUser();
-
         }
     }
 
