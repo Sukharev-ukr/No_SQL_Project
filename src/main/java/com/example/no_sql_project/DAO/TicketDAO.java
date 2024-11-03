@@ -122,7 +122,6 @@ public class TicketDAO extends BaseDAO {
     public void updateTicket(ObjectId id,Ticket ticket) {
         updateOneEntry(id, parseDocument(ticket));
     }
-
     public ArrayList<Ticket> getOpenTickets() {
         Document filter = new Document("status", Status.open.toString());
         FindIterable<Document> ticketCollection = findMultiple(filter);

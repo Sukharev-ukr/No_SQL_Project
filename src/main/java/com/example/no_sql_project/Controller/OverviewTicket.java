@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class OverviewTicket {
     private TableColumn<Ticket, String> statusColumn;
     @FXML
     private TableColumn<Ticket, String> descriptionColumn;
+
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
     private Button manageUsersButton;

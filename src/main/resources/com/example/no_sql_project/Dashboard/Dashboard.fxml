@@ -8,11 +8,11 @@
 
 <VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <!-- Navigation Bar -->
-    <HBox alignment="CENTER" spacing="20" styleClass="nav-bar">
+    <HBox visible="false" fx:id="navBard" alignment="CENTER" spacing="20" styleClass="nav-bar">
         <children>
             <Button fx:id="dashboardButton" onMouseClicked="#dashboardClick" text="Dashboard" styleClass="nav-button" />
-            <Button visible="false" fx:id="incidentButton" onMouseClicked="#incidentClick" text="Incident Management" styleClass="nav-button" />
-            <Button visible="false" fx:id="userButton" onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
+            <Button fx:id="incidentButton" onMouseClicked="#incidentClick" text="Incident Management" styleClass="nav-button" />
+            <Button fx:id="userButton" onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
         </children>
     </HBox>
 
@@ -49,5 +49,5 @@
     </HBox>
 
     <!-- Show List Button -->
-    <Button text="SHOW LIST" styleClass="show-list-button" />
+    <Button fx:id="showList" onMouseClicked="#showListClick" text="SHOW LIST" styleClass="show-list-button" />
 </VBox>

@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -38,7 +39,10 @@ public class DashboardController implements Initializable {
     Button userButton;
     @FXML
     VBox pastDeadlineBox;
-
+    @FXML
+    private HBox navBard;
+    @FXML
+    private Button showList;
     TicketService ticketService;
 
     Employee currentUser;
@@ -68,11 +72,19 @@ public class DashboardController implements Initializable {
     @FXML
     public void incidentClick(){
         loadFXML("/com/example/no_sql_project/Tickets/OverviewTickets.fxml");
+
     }
     @FXML
     public void userClick(){
         loadFXML("/com/example/no_sql_project/UserManagement/UserManagement.fxml");
     }
+
+    @FXML
+    public void showListClick(){
+        loadFXML("/com/example/no_sql_project/Tickets/OverviewTickets.fxml");
+
+    }
+
     private void loadFXML(String path){
         try{
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(path));
@@ -85,7 +97,7 @@ public class DashboardController implements Initializable {
 
     private void initializeUser(){
         System.out.println("logged in as user");
-        incidentButton.setVisible(true);
+        showList.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getEmployeeTickets(currentUser.getId().toString());
         ArrayList<Ticket> openTickets = getOpenTickets(tickets);
@@ -94,9 +106,8 @@ public class DashboardController implements Initializable {
     }
     private void initializeAdmin(){
         System.out.println("logged in as admin");
-        incidentButton.setVisible(true);
-        userButton.setVisible(true);
-        pastDeadlineBox.setVisible(true);
+        navBard.setVisible(true);
+        urgentTickets.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getAllTickets();
         ArrayList<Ticket> openTickets = getOpenTickets(tickets);
