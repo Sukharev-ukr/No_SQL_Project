@@ -130,7 +130,7 @@ public class OverviewTicket {
 
     private void loadTicketBaseOnRole() {
         ArrayList<Ticket> tickets;
-        if (loggedInEmployee.getRole().equals("ServiceDesk")) {
+        if (loggedInEmployee.getPrivileges().equals("admin")) {
             tickets = ticketService.getTicketsWithEmployeeNames();
         } else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
@@ -211,14 +211,13 @@ public class OverviewTicket {
     public void switchToDashboard() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
-            Parent root = fxmlLoader.load();
             DashboardController controller = new DashboardController(loggedInEmployee);
             fxmlLoader.setController(controller);
-
+            Scene scene = new Scene(fxmlLoader.load());
             // Create a new stage for the update ticket screen
-            Stage stage = new Stage();
+            Stage stage = (Stage)ticketTable.getScene().getWindow();
             stage.setTitle("Dashboard");
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Unable to load the Dashboard screen.");
@@ -266,7 +265,7 @@ public class OverviewTicket {
 
     ////////////////////////////////////////////////////////////////// Filter Ticket By UserName
     private void loadAllTickets() {
-        if ((loggedInEmployee != null && "ServiceDesk".equalsIgnoreCase(loggedInEmployee.getRole()) && "admin".equalsIgnoreCase(loggedInEmployee.getPrivileges()))) {
+        if ((loggedInEmployee != null && "ServiceDesk".equalsIgnoreCase(loggedInEmployee.getRole()) || "admin".equalsIgnoreCase(loggedInEmployee.getPrivileges()))) {
             allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
         }
         else {
