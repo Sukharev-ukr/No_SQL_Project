@@ -49,5 +49,5 @@
     </HBox>
 
     <!-- Show List Button -->
-    <Button fx:id="showList" onMouseClicked="#showListClick" text="SHOW LIST" styleClass="show-list-button" />
+    <Button visible="false" fx:id="showList" onMouseClicked="#showListClick" text="SHOW LIST" styleClass="show-list-button" />
 </VBox>
