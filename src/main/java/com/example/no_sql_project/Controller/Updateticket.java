@@ -23,8 +23,8 @@ public class Updateticket {
     @FXML
     private ComboBox<Type> incidentTypeComboBox;
 
-    @FXML
-    private ComboBox<String> reportedByComboBox;
+    //@FXML
+    //private ComboBox<String> reportedByComboBox;
 
     @FXML
     private ComboBox<Priority> priorityComboBox;
@@ -40,13 +40,11 @@ public class Updateticket {
 
     private TicketService ticketService = new TicketService();
     private Map<String, ObjectId> userIdMap = new HashMap<>();
-    private ObjectId userId;
     private Ticket currentTicket;
-    private String loggedInUsername;
+    private Employee loggedInUser;
 
     public void setLoggedInUsername(Employee employee) {
-        this.userId = employee.getId();
-        this.loggedInUsername = employee.getName();
+       this.loggedInUser = employee;
     }
 
     public void setCurrentTicket(Ticket ticket) {
@@ -66,7 +64,7 @@ public class Updateticket {
         ArrayList<Employee> employees = employeeDAO.getAllEmployees();
         for (Employee employee : employees) {
             userIdMap.put(employee.getName(), employee.getId());
-            reportedByComboBox.getItems().add(employee.getName());
+            //reportedByComboBox.getItems().add(employee.getName());
         }
     }
 
@@ -76,18 +74,18 @@ public class Updateticket {
         priorityComboBox.setValue(ticket.getPriority());
         descriptionArea.setText(ticket.getDescription());
 
-        for (Map.Entry<String, ObjectId> entry : userIdMap.entrySet()) {
-            if (entry.getValue().equals(ticket.getEmployeeId())) {
-                reportedByComboBox.setValue(entry.getKey());
-                break;
-            }
-        }
+        //for (Map.Entry<String, ObjectId> entry : userIdMap.entrySet()) {
+           // if (entry.getValue().equals(ticket.getEmployeeId())) {
+              //  reportedByComboBox.setValue(entry.getKey());
+              //  break;
+          //  }
+        //}
     }
 
     private boolean validateInputs() {
         return datePickerReported.getValue() != null &&
                 incidentTypeComboBox.getValue() != null &&
-                reportedByComboBox.getValue() != null &&
+               // reportedByComboBox.getValue() != null &&
                 priorityComboBox.getValue() != null &&
                 !descriptionArea.getText().isEmpty();
     }
@@ -99,17 +97,18 @@ public class Updateticket {
             Priority priority = priorityComboBox.getValue();
             Type type = incidentTypeComboBox.getValue();
             String description = descriptionArea.getText();
-            String selectedUser = reportedByComboBox.getValue();
-            ObjectId selectedUserId = userIdMap.get(selectedUser);
+            //String selectedUser = reportedByComboBox.getValue();
+            //ObjectId selectedUserId = userIdMap.get(selectedUser);
 
-            // Update current ticket data
+            //Update current ticket data
             currentTicket.setTicketDate(ticketDate);
             currentTicket.setPriority(priority);
             currentTicket.setType(type);
             currentTicket.setDescription(description);
-            currentTicket.setEmployeeId(selectedUserId.toHexString());
+            currentTicket.setEmployeeId(loggedInUser.getId().toHexString());
 
-            ticketService.updateTicket(currentTicket.getId(), currentTicket);
+            //ticketService.updateTicket(currentTicket.getId(), currentTicket);
+            ticketService.updateTicketDetails(currentTicket.getId(), ticketDate, type, priority, description);
             showSuccessAlert("Ticket Updated", "Ticket has been updated successfully.");
             closeWindow();
         } else {

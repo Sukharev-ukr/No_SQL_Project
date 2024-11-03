@@ -5,6 +5,7 @@ import com.example.no_sql_project.DAO.EmployeeDAO;
 import com.example.no_sql_project.DAO.TicketDAO;
 import com.example.no_sql_project.Model.Employee;
 import com.example.no_sql_project.Model.Ticket;
+import com.example.no_sql_project.Service.TicketService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,7 +26,6 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
     public static void main(String[] args)
     {
         launch();

@@ -23,8 +23,8 @@ public class Createincidentticket {
     @FXML
     private ComboBox<Type> incidentTypeComboBox;
 
-    @FXML
-    private ComboBox<String> reportedByComboBox;
+   // @FXML
+   // private TextField reportedUser;
 
     @FXML
     private ComboBox<Priority> priorityComboBox;
@@ -39,12 +39,10 @@ public class Createincidentticket {
     private Button submitTicketButton;
     private TicketService ticketService = new TicketService();
     private Map<String, ObjectId> userIdMap = new HashMap<>();
-    private ObjectId userId;
-    private String loggedInUsername;
+    private Employee loggedInUsername;
 
     public void setLoggedInUsername(Employee employee) {
-        this.userId = employee.getId();
-        this.loggedInUsername = employee.getName();
+        this.loggedInUsername = employee;
     }
 
     @FXML
@@ -59,14 +57,14 @@ public class Createincidentticket {
         ArrayList<Employee> employees = employeeDAO.getAllEmployees();
          for (Employee employee : employees) {
              userIdMap.put(employee.getName(), employee.getId());
-             reportedByComboBox.getItems().add(employee.getName());
+            // reportedByComboBox.getItems().add(employee.getName());
          }
     }
 
     private boolean validateInputs() {
         return datePickerReported.getValue() != null &&
                 incidentTypeComboBox.getValue() != null &&
-                reportedByComboBox.getValue() != null &&
+                //reportedUser.get != null &&
                 priorityComboBox.getValue() != null &&
                 !descriptionArea.getText().isEmpty();
     }
@@ -77,13 +75,13 @@ public class Createincidentticket {
             Priority priority = priorityComboBox.getValue();
             Type type = incidentTypeComboBox.getValue();
             String description = descriptionArea.getText();
-            String selectedUser = reportedByComboBox.getValue();
-            ObjectId selectedUserId = userIdMap.get(selectedUser);
-            Ticket newTicket = new Ticket(selectedUserId.toHexString(), type, priority, Status.open, ticketDate, description);
+            //String selectedUser = reportedByComboBox.getValue();
+            //ObjectId selectedUserId = userIdMap.get(selectedUser);
+            Ticket newTicket = new Ticket(loggedInUsername.getId().toHexString(), type, priority, Status.open, ticketDate, description);
             ticketService.addTickets(newTicket);
             showSuccessAlert("Ticket Created", "Ticker has been created successfully");
-            clearFormFields();
-            switchToTicketOverview();
+            //clearFormFields();
+            closeWindow();
         }
         else {
             showAlert("Create Fail", "Please Fill In All Of Required Fields");
@@ -101,7 +99,7 @@ public class Createincidentticket {
         clearFormFields();
 
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("com.example.no_sql_project.Controller.OverviewTicket"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/OverviewTickets.fxml"));
             Parent root = fxmlLoader.load();
 
             OverviewTicket overviewTicketController = fxmlLoader.getController();
@@ -119,7 +117,7 @@ public class Createincidentticket {
     private void switchToTicketOverview() {
         try {
             // Load the TicketOverview scene
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/OverviewTicket.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/OverviewTickets.fxml"));
             Parent root = fxmlLoader.load();
 
             // Get the controller for TicketOverview and call method to refresh table
@@ -140,7 +138,7 @@ public class Createincidentticket {
     private void clearFormFields() {
         datePickerReported.setValue(null);
         incidentTypeComboBox.setValue(null);
-        reportedByComboBox.setValue(null);
+        //reportedByComboBox.setValue(null);
         priorityComboBox.setValue(null);
         descriptionArea.clear();
     }
@@ -151,5 +149,10 @@ public class Createincidentticket {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
     }
 }
