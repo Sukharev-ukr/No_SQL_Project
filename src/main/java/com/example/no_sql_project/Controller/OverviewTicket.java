@@ -29,8 +29,6 @@ public class OverviewTicket {
     @FXML
     private TextField filterTextField;
     @FXML
-    private Button deleteButton;
-    @FXML
     private Button closeButton;
     @FXML
     private Button escalationButton;
@@ -91,12 +89,6 @@ public class OverviewTicket {
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
         }
-        if (loggedInEmployee != null && loggedInEmployee.getRole().equals("ServiceDesk")) {
-            deleteButton.setDisable(true);
-            escalationButton.setDisable(true);
-            closeButton.setDisable(true);
-        }
-
         //loadTicketBaseOnRole();
         loadAllTickets();
         setupFilter();
