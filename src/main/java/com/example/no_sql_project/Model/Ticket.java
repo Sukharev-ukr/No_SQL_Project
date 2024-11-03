@@ -38,6 +38,9 @@ public class Ticket {
     public String getEmployeeName() {
         return employeeName;
     }
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
 
     public ObjectId getId() {
         return id;

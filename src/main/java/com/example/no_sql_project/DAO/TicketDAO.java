@@ -53,6 +53,17 @@ public class TicketDAO extends BaseDAO {
         Document document = new Document("_id", id);
         return parseTicket(findOneQuery(document));
     }
+    public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityAscending(String employeeID) {
+        Document filter = new Document("Employee_ID", employeeID);
+        FindIterable<Document> ticketCollection = collection.find(filter).sort(ascending("Priority"));
+        return parseTicketList(ticketCollection);
+    }
+
+    public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityDescending(String employeeID) {
+        Document filter = new Document("Employee_ID", employeeID);
+        FindIterable<Document> ticketCollection = collection.find(filter).sort(descending("Priority"));
+        return parseTicketList(ticketCollection);
+    }
 
     public ArrayList<Ticket> getAllTickets() {
         FindIterable<Document> ticketCollection = getAll();
@@ -92,9 +103,6 @@ public class TicketDAO extends BaseDAO {
             archiveDoa.insertManyIntoArchive(listTickets);
             deleteMany(filter);
         }
-
-
-
     }
 
     // Utility method to parse tickets from FindIterable
@@ -166,41 +174,104 @@ public class TicketDAO extends BaseDAO {
         return data;
     }
 
+
     public ArrayList<Ticket> getTicketsWithEmployeeNames() {
         ArrayList<Ticket> tickets = new ArrayList<>();
 
-        // Aggregation pipeline with $lookup to join Tickets with Employees, excluding _id
-        AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
-                new Document("$lookup", new Document()
-                        .append("from", "Employees")
-                        .append("localField", "Employee_ID")
-                        .append("foreignField", "_id")
-                        .append("as", "employeeInfo")
-                ),
-                new Document("$unwind", "$employeeInfo"),  // Flatten the joined array
-                new Document("$project", new Document()  // Select the fields you need
-                        .append("Type", 1)
-                        .append("Priority", 1)
-                        .append("Status", 1)
-                        .append("Date", 1)
-                        .append("Description", 1)
-                        .append("employeeName", "$employeeInfo.Name")  // Get Name from employeeInfo
-                )
-        ));
+        try {
+            AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
+                    new Document("$lookup", new Document()
+                            .append("from", "Employees")
+                            .append("let", new Document("id", new Document("$toObjectId", "$Employee_ID")))
+                            .append("pipeline", Arrays.asList(
+                                    new Document("$match", new Document("$expr", new Document("$eq", Arrays.asList("$_id", "$$id"))))
+                            ))
+                            .append("as", "Employee")),
+                    new Document("$addFields", new Document("name", new Document("$arrayElemAt", Arrays.asList("$Employee.Name", 0))))
+            )).maxTime(60000, java.util.concurrent.TimeUnit.MILLISECONDS).allowDiskUse(true);
 
-        // Parse the result into Ticket objects
-        for (Document document : results) {
-            Ticket ticket = new Ticket(
-                    document.getString("employeeName"),  // Employee name from lookup
-                    Ticket.parseType(document.getString("Type")),
-                    Priority.valueOf(document.getString("Priority")),
-                    Status.valueOf(document.getString("Status")),
-                    LocalDateTime.parse(document.getString("Date")),
-                    document.getString("Description")
-            );
-            tickets.add(ticket);
+
+            for (Document document : results) {
+                Ticket ticket = parseTicket(document);
+                ticket.setEmployeeName(document.getString("name"));
+                tickets.add(ticket);
+            }
+            return tickets;
+        } catch (Exception e) {
+            System.err.println("Error during aggregation: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public ArrayList<Ticket> getTicketsForCurrentUser(String employeeId) {
+        ArrayList<Ticket> tickets = new ArrayList<>();
+
+        try {
+            AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
+                    new Document("$match", new Document("Employee_ID", employeeId)), // Filter by Employee_ID
+                    new Document("$lookup", new Document()
+                            .append("from", "Employees")
+                            .append("let", new Document("id", new Document("$toObjectId", "$Employee_ID")))
+                            .append("pipeline", Arrays.asList(
+                                    new Document("$match", new Document("$expr", new Document("$eq", Arrays.asList("$_id", "$$id"))))
+                            ))
+                            .append("as", "Employee")),
+                    new Document("$addFields", new Document("name", new Document("$arrayElemAt", Arrays.asList("$Employee.Name", 0))))
+            )).maxTime(60000, java.util.concurrent.TimeUnit.MILLISECONDS).allowDiskUse(true);
+
+            for (Document document : results) {
+                Ticket ticket = parseTicket(document);
+                ticket.setEmployeeName(document.getString("name"));
+                tickets.add(ticket);
+            }
+        } catch (Exception e) {
+            System.err.println("Error during aggregation for current user tickets: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return tickets;
+    }
+
+    public void updateTicketPriority(ObjectId ticketId, Priority newPriority) { //for escalation ticket priority
+        Document update = new Document("$set", new Document("Priority", newPriority.name())); // Only update Priority
+        collection.updateOne(eq("_id", ticketId), update); // Execute update based on ticket ID
+    }
+
+    public void updateTicketStatus(ObjectId ticketId, Status newStatus) { // for update ticket status
+        Document update = new Document("$set", new Document("Status", newStatus.name()));
+        collection.updateOne(eq("_id", ticketId), update);
+    }
+
+    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description) {
+        Document updateFields = new Document();
+        if (date != null) {
+            updateFields.put("Date", date.toString());  // Convert LocalDateTime to String for storage
+        }
+        if (type != null) {
+            updateFields.put("Type", type.toString());
+        }
+        if (priority != null) {
+            updateFields.put("Priority", priority.toString());
+        }
+        if (description != null && !description.isEmpty()) {
+            updateFields.put("Description", description);
+        }
+
+        // Only proceed if there is at least one field to update
+        if (!updateFields.isEmpty()) {
+            Document updateQuery = new Document("$set", updateFields);
+            collection.updateOne(eq("_id", ticketId), updateQuery);
+        }
+    }
+
+    private LocalDateTime parseDate(String dateStr) {
+        try {
+            return LocalDateTime.parse(dateStr);
+        } catch (Exception e) {
+            System.out.println("Date parsing error: " + e.getMessage());
+            return LocalDateTime.now();  // Use current date as fallback
+        }
     }
 }

@@ -50,32 +50,22 @@ public class OverviewTicket {
 
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
-    private Button manageUsersButton;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
     private ObservableList<Ticket> allTickets;
 
-    public void setLoggedInEmployee(Employee loggedInEmployee) {
+
+    public OverviewTicket(Employee loggedInEmployee){
         this.loggedInEmployee = loggedInEmployee;
-        initializeDashboardBasedOnRole();
     }
 
-    private void initializeDashboardBasedOnRole() {
-        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
-            // ServiceDesk gets full privileges, including the ability to manage users
-            manageUsersButton.setVisible(true);
-            createIncidentButton.setVisible(true);
-        } else {
-            // Regular employee has limited functionality
-            manageUsersButton.setVisible(false); // Hide user management button for regular employees
-            createIncidentButton.setVisible(true);
-        }
-    }
 
     @FXML
     public void initialize() {
         // Initialize table columns
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        typeColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getType().toString())
+        );
 
         // Display employee name instead of employee ID
         userColumn.setCellValueFactory(cellData ->
@@ -87,9 +77,16 @@ public class OverviewTicket {
                         cellData.getValue().getTicketDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "")
         );
 
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        statusColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getStatus().toString())
+        );
+        descriptionColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getDescription())
+        );
+
+        priorityColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getPriority().toString())
+        );
 
         // Initialize the sort dropdown to trigger the sort event
         if (prioritySortChoiceBox != null) {
@@ -102,22 +99,36 @@ public class OverviewTicket {
             closeButton.setDisable(true);
         }
 
-        loadTicketBaseOnRole();
+        //loadTicketBaseOnRole();
         loadAllTickets();
         setupFilter();
     }
 
-     @FXML
+    @FXML
     private void handleSortTickets() {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
-        if (selectedSortOrder.equals("High to Low")) {
-            tickets = ticketService.getTicketsSortedByPriorityDescending();
-        } else if (selectedSortOrder.equals("Low to High")) {
-            tickets = ticketService.getTicketsSortedByPriorityAscending();
+
+        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+            // ServiceDesk can see all tickets
+            if (selectedSortOrder.equals("High to Low")) {
+                tickets = ticketService.getTicketsSortedByPriorityDescending();
+            } else if (selectedSortOrder.equals("Low to High")) {
+                tickets = ticketService.getTicketsSortedByPriorityAscending();
+            } else {
+                tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
+            }
         } else {
-            tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
+            // Regular Employee can see only their tickets
+            if (selectedSortOrder.equals("High to Low")) {
+                tickets = ticketService.getEmployeeTicketsSortedByPriorityDescending(loggedInEmployee.getId().toString());
+            } else if (selectedSortOrder.equals("Low to High")) {
+                tickets = ticketService.getEmployeeTicketsSortedByPriorityAscending(loggedInEmployee.getId().toString());
+            } else {
+                tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString()); // Default unsorted
+            }
         }
+
         ticketTable.getItems().clear();
         ticketTable.getItems().addAll(tickets);
     }
@@ -151,9 +162,10 @@ public class OverviewTicket {
             }
 
             // Update the ticket in the database
-            ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
-            loadTicketBaseOnRole();  // Refresh the table to show the updated priority
-            showAlert("Success", "The ticket priority has been escalated.");
+            ticketService.updatePriority(selectedTicket.getId(), selectedTicket.getPriority()); //update only the priority
+            //loadTicketBaseOnRole();  // Refresh the table to show the updated priority
+            ticketTable.refresh();
+            showSuccessAlert("Success", "The ticket priority has been escalated.");
         } else {
             showAlert("Error", "Please select a ticket to escalate.");
         }
@@ -163,9 +175,10 @@ public class OverviewTicket {
         Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
         if (selectedTicket != null) {
             selectedTicket.setStatus(Status.closed);  // Update status to closed
-            ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
-            loadTicketBaseOnRole();  // Refresh table
-            showAlert("Success", "The ticket has been closed successfully.");
+            //ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
+            ticketService.updateStatus(selectedTicket.getId(), selectedTicket.getStatus());  // Update the status in the database
+            ticketTable.refresh(); // Refresh table
+            showSuccessAlert("Success", "The ticket has been closed successfully.");
         } else {
             showAlert("Error", "Please select a ticket to close.");
         }
@@ -179,21 +192,42 @@ public class OverviewTicket {
     @FXML
     public void switchToCreateIncident () {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/Createincidentticket.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/CreateIncidentTicket.fxml"));
             Parent root = fxmlLoader.load();
 
             // Get the controller of CreateIncident and pass logged-in employee data if needed
             Createincidentticket createIncidentController = fxmlLoader.getController();
             createIncidentController.setLoggedInUsername(loggedInEmployee);
 
-            // Switch to the CreateIncident scene
-            Scene createIncidentScene = new Scene(root);
-            Stage currentStage = (Stage) createIncidentButton.getScene().getWindow();
-            currentStage.setScene(createIncidentScene);
-            currentStage.setTitle("Create Incident");
+            // Create a new stage for the update ticket screen
+            Stage stage = new Stage();
+            stage.setTitle("Create Incident");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            // Refresh ticket table upon returning
+            loadAllTickets();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Unable to load the Create Incident screen.");
+        }
+    }
+
+    @FXML
+    public void switchToDashboard() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
+            Parent root = fxmlLoader.load();
+            DashboardController controller = new DashboardController(loggedInEmployee);
+            fxmlLoader.setController(controller);
+
+            // Create a new stage for the update ticket screen
+            Stage stage = new Stage();
+            stage.setTitle("Dashboard");
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the Dashboard screen.");
         }
     }
     public void switchToUpdateTicket() {
@@ -214,8 +248,8 @@ public class OverviewTicket {
                 Stage stage = new Stage();
                 stage.setTitle("Update Ticket");
                 stage.setScene(new Scene(root));
-                stage.show();
-
+                stage.showAndWait();
+                ticketTable.refresh();
             } catch (IOException e) {
                 e.printStackTrace();
                 showAlert("Error", "Unable to load the Update Ticket screen.");
@@ -228,7 +262,14 @@ public class OverviewTicket {
 
     ////////////////////////////////////////////////////////////////// Filter Ticket By UserName
     private void loadAllTickets() {
-        allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
+        if ((loggedInEmployee != null && "ServiceDesk".equalsIgnoreCase(loggedInEmployee.getRole()) && "admin".equalsIgnoreCase(loggedInEmployee.getPrivileges()))) {
+            allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
+        }
+        else {
+            allTickets = FXCollections.observableArrayList(ticketService.getTicketsForCurrentUser(loggedInEmployee.getId().toString()));
+        }
+
+       // allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
         ticketTable.setItems(allTickets);
     }
 
@@ -256,6 +297,14 @@ public class OverviewTicket {
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showSuccessAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
