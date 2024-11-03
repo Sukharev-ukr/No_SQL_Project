@@ -89,7 +89,8 @@ public class TicketDAO extends BaseDAO {
         return parseTicketList(ticketCollection);
     }
 
-    public void archiveTickets(){
+    public ArrayList<Ticket> archiveTickets(){
+        int archiveAmount = 0;
         ArchiveDoa archiveDoa = new ArchiveDoa();
         String cutOffDate = archiveDoa.setCutOffDate(TICKET_ARCHIVE_DATE);
 
@@ -98,11 +99,15 @@ public class TicketDAO extends BaseDAO {
         FindIterable<Document> ticketCollection = findMultiple(filter);
         ArrayList<Document> listTickets = new ArrayList<>();
         for (Document document : ticketCollection) { listTickets.add(document); }
-        System.out.println(mongoDbConnection.database.getName());
+        archiveAmount = listTickets.size();
         if (!listTickets.isEmpty()) {
             archiveDoa.insertManyIntoArchive(listTickets);
             deleteMany(filter);
         }
+
+        ArrayList<Ticket> returnTickets = new ArrayList<>();
+        for (Document document : listTickets) {returnTickets.add(parseTicket(document));}
+        return returnTickets;
     }
 
     // Utility method to parse tickets from FindIterable

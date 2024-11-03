@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -45,7 +46,8 @@ public class OverviewTicket {
     private TableColumn<Ticket, String> statusColumn;
     @FXML
     private TableColumn<Ticket, String> descriptionColumn;
-
+    @FXML
+    private Button archiveTicket;
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
     private TicketService ticketService = new TicketService();
@@ -222,6 +224,16 @@ public class OverviewTicket {
             showAlert("Error", "Unable to load the Dashboard screen.");
         }
     }
+    @FXML
+    public void archiveOnClick(){
+        ArrayList<Ticket> tickets = ticketService.archiveTickets();
+        StringBuilder message = new StringBuilder();
+        for (Ticket ticket : tickets) {
+            message.append(MessageFormat.format("Date: {0}, Type: {1}, Description: {2}\n", ticket.getTicketDate(), ticket.getType(), ticket.getDescription()));
+        }
+        showSuccessAlert("archive Tickets",MessageFormat.format("Archived Tickets {0}\n{1}",tickets.size(),message.toString()));
+    }
+
     public void switchToUpdateTicket() {
         Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
 

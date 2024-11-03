@@ -58,7 +58,7 @@
             <Button fx:id="escalationButton" mnemonicParsing="false" onAction="#handleEscalateTicket" prefHeight="46.0" prefWidth="131.0" text="Escalation Ticket" />
             <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseTicket" prefHeight="48.0" prefWidth="151.0" text="Close Ticket" />
             <Button fx:id="updateButon" mnemonicParsing="false" onAction="#switchToUpdateTicket" prefHeight="49.0" prefWidth="149.0" text="Update Ticket" />
-            <Button fx:id="archiveTicket" lineSpacing="100.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="123.0" text="Archive Tickets" />
+            <Button fx:id="archiveTicket" lineSpacing="100.0" onMouseClicked="#archiveOnClick" mnemonicParsing="false" prefHeight="49.0" prefWidth="123.0" text="Archive Tickets" />
          </children>
       </HBox>
     </children>
