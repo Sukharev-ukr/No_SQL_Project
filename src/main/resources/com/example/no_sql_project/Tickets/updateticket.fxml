@@ -17,9 +17,6 @@
                 <Label text="Type of incident:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <ComboBox fx:id="incidentTypeComboBox" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label text="Reported by user:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <ComboBox fx:id="reportedByComboBox" promptText="Select user" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
                 <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                 <ComboBox fx:id="priorityComboBox" promptText="Select priority" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
