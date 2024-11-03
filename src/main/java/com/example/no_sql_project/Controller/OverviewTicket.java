@@ -102,17 +102,31 @@ public class OverviewTicket {
         setupFilter();
     }
 
-     @FXML
+    @FXML
     private void handleSortTickets() {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
-        if (selectedSortOrder.equals("High to Low")) {
-            tickets = ticketService.getTicketsSortedByPriorityDescending();
-        } else if (selectedSortOrder.equals("Low to High")) {
-            tickets = ticketService.getTicketsSortedByPriorityAscending();
+
+        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+            // ServiceDesk can see all tickets
+            if (selectedSortOrder.equals("High to Low")) {
+                tickets = ticketService.getTicketsSortedByPriorityDescending();
+            } else if (selectedSortOrder.equals("Low to High")) {
+                tickets = ticketService.getTicketsSortedByPriorityAscending();
+            } else {
+                tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
+            }
         } else {
-            tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
+            // Regular Employee can see only their tickets
+            if (selectedSortOrder.equals("High to Low")) {
+                tickets = ticketService.getEmployeeTicketsSortedByPriorityDescending(loggedInEmployee.getId().toString());
+            } else if (selectedSortOrder.equals("Low to High")) {
+                tickets = ticketService.getEmployeeTicketsSortedByPriorityAscending(loggedInEmployee.getId().toString());
+            } else {
+                tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString()); // Default unsorted
+            }
         }
+
         ticketTable.getItems().clear();
         ticketTable.getItems().addAll(tickets);
     }

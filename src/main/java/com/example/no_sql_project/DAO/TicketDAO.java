@@ -53,6 +53,17 @@ public class TicketDAO extends BaseDAO {
         Document document = new Document("_id", id);
         return parseTicket(findOneQuery(document));
     }
+    public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityAscending(String employeeID) {
+        Document filter = new Document("Employee_ID", employeeID);
+        FindIterable<Document> ticketCollection = collection.find(filter).sort(ascending("Priority"));
+        return parseTicketList(ticketCollection);
+    }
+
+    public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityDescending(String employeeID) {
+        Document filter = new Document("Employee_ID", employeeID);
+        FindIterable<Document> ticketCollection = collection.find(filter).sort(descending("Priority"));
+        return parseTicketList(ticketCollection);
+    }
 
     public ArrayList<Ticket> getAllTickets() {
         FindIterable<Document> ticketCollection = getAll();
