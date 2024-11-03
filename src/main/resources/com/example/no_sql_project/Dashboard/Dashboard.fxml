@@ -12,7 +12,7 @@
         <children>
             <Button fx:id="dashboardButton" onMouseClicked="#dashboardClick" text="Dashboard" styleClass="nav-button" />
             <Button visible="false" fx:id="incidentButton" onMouseClicked="#incidentClick" text="Incident Management" styleClass="nav-button" />
-            <Button visible="false" fx:id="userButton" onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
+            <Button visible="true" fx:id="userButton" onMouseClicked="#userClick" text="User Management" styleClass="nav-button" />
         </children>
     </HBox>
 

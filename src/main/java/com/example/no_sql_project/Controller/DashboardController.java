@@ -83,11 +83,14 @@ public class DashboardController implements Initializable {
     }
     private void loadFXML(String path){
         try{
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(path));
-        Scene scene = new Scene(fxmlLoader.load());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(path));
 
-        Stage currentStage = (Stage) mainContainer.getScene().getWindow();
-        currentStage.setScene(scene);
+            EmployeeManagementController controller = new EmployeeManagementController(currentUser);
+            fxmlLoader.setController(controller);
+
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage currentStage = (Stage) mainContainer.getScene().getWindow();
+            currentStage.setScene(scene);
         }catch (IOException e){e.printStackTrace();}
     }
 

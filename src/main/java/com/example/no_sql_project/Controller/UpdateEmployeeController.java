@@ -5,13 +5,13 @@ import com.example.no_sql_project.Service.EmployeeService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class AddEmployeeController {
+import java.util.Objects;
+
+public class UpdateEmployeeController {
 
     @FXML
     private TextField firstNameField;
@@ -27,15 +27,32 @@ public class AddEmployeeController {
 
     EmployeeService employeeService = new EmployeeService();
 
-    // Initialization method
-    @FXML
-    public void initialize() {
-        ObservableList<String> options = FXCollections.observableArrayList("ServiceDesk", "Employee");
-        userTypeComboBox.setItems(options);
+    private Employee loggedInEmployee;
+
+    public UpdateEmployeeController(Employee loggedInEmployee){
+        this.loggedInEmployee = loggedInEmployee;
     }
 
     @FXML
-    private void addUser() {
+    public void initialize() {
+
+        String[] name = loggedInEmployee.getName().split(" ");
+        String firstName = name[0];
+        String lastName = name[1];
+
+        firstNameField.setText(firstName);
+        lastNameField.setText(lastName);
+
+        userTypeComboBox.setValue(loggedInEmployee.getRole());
+
+        ObservableList<String> options = FXCollections.observableArrayList("ServiceDesk", "Employee");
+        userTypeComboBox.setItems(options);
+
+        passwordField.setText(loggedInEmployee.getPassword());
+    }
+
+    @FXML
+    public void updateUser() {
         if (validateInput()) {
             String firstName = firstNameField.getText();
             String password = passwordField.getText();
@@ -49,11 +66,9 @@ public class AddEmployeeController {
                 privileges = "admin";
             }
 
-            Employee employee = new Employee(fullName,password,userType,privileges);
+            Employee employee = new Employee(loggedInEmployee.getId(),fullName,password,userType,privileges);
 
             employeeService.passAddEmployee(employee);
-            //debug
-            System.out.println("User Added: " + firstName + " " + lastName + " - " + userType);
 
             close();
         } else {
@@ -81,4 +96,3 @@ public class AddEmployeeController {
     }
 
 }
-
