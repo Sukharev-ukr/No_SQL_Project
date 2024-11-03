@@ -5,7 +5,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="610.0" prefWidth="720.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.OverviewTicket">
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="610.0" prefWidth="720.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <Label id="overviewTitle" text="Overview Tickets" />
 
@@ -36,7 +37,7 @@
         </HBox>
 
         <!-- TableView for Tickets -->
-        <TableView fx:id="ticketsTable" prefHeight="402.0" prefWidth="720.0">
+        <TableView fx:id="ticketTable" prefHeight="402.0" prefWidth="720.0">
             <columns>
                 <TableColumn fx:id="typeColumn" prefWidth="150" text="Type" />
                 <TableColumn fx:id="userColumn" prefWidth="150" text="User" />

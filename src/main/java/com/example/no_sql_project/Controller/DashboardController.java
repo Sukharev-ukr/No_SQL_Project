@@ -67,7 +67,15 @@ public class DashboardController implements Initializable {
     }
     @FXML
     public void incidentClick(){
-        loadFXML("/com/example/no_sql_project/Tickets/OverviewTickets.fxml");
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("/com/example/no_sql_project/Tickets/OverviewTickets.fxml"));
+            OverviewTicket controller = new OverviewTicket(currentUser);
+            fxmlLoader.setController(controller);
+
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage currentStage = (Stage) mainContainer.getScene().getWindow();
+            currentStage.setScene(scene);
+        }catch (IOException e){e.printStackTrace();}
     }
     @FXML
     public void userClick(){
@@ -114,6 +122,7 @@ public class DashboardController implements Initializable {
         }
         urgentTickets.setText(String.valueOf(urgentTicketsCount));
     }
+
     private void setOpenCloseTicketRatio(ArrayList<Ticket> tickets, ArrayList<Ticket> openTickets){
         openTicketLabel.setText(MessageFormat.format("{0}/{1}",openTickets.size(), tickets.size()));
     }

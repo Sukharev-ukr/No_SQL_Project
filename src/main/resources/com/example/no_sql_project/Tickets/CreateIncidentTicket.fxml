@@ -18,13 +18,14 @@
                 <ComboBox fx:id="incidentTypeComboBox" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                 <Label text="Reported by user:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                <ComboBox fx:id="reportedByComboBox" promptText="Select user" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                 <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                 <ComboBox fx:id="priorityComboBox" promptText="Select priority" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                 <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                 <TextArea fx:id="descriptionArea" prefHeight="100" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <ComboBox fx:id="reportedByComboBox1" layoutX="146.0" layoutY="127.0" promptText="Select user" />
+            <TextField fx:id="reportUser" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </children>
          <columnConstraints>
             <ColumnConstraints />

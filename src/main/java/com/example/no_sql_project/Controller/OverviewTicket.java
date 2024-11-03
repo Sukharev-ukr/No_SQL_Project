@@ -48,32 +48,22 @@ public class OverviewTicket {
     private TableColumn<Ticket, String> descriptionColumn;
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
-    private Button manageUsersButton;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
     private ObservableList<Ticket> allTickets;
 
-    public void setLoggedInEmployee(Employee loggedInEmployee) {
+
+    public OverviewTicket(Employee loggedInEmployee){
         this.loggedInEmployee = loggedInEmployee;
-        initializeDashboardBasedOnRole();
     }
 
-    private void initializeDashboardBasedOnRole() {
-        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
-            // ServiceDesk gets full privileges, including the ability to manage users
-            manageUsersButton.setVisible(true);
-            createIncidentButton.setVisible(true);
-        } else {
-            // Regular employee has limited functionality
-            manageUsersButton.setVisible(false); // Hide user management button for regular employees
-            createIncidentButton.setVisible(true);
-        }
-    }
 
     @FXML
     public void initialize() {
         // Initialize table columns
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        typeColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getType().toString())
+        );
 
         // Display employee name instead of employee ID
         userColumn.setCellValueFactory(cellData ->
@@ -85,9 +75,16 @@ public class OverviewTicket {
                         cellData.getValue().getTicketDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "")
         );
 
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        statusColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getStatus().toString())
+        );
+        descriptionColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getDescription())
+        );
+
+        priorityColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getPriority().toString())
+        );
 
         // Initialize the sort dropdown to trigger the sort event
         if (prioritySortChoiceBox != null) {
@@ -150,7 +147,8 @@ public class OverviewTicket {
 
             // Update the ticket in the database
             ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
-            loadTicketBaseOnRole();  // Refresh the table to show the updated priority
+            //loadTicketBaseOnRole();  // Refresh the table to show the updated priority
+            ticketTable.refresh();
             showAlert("Success", "The ticket priority has been escalated.");
         } else {
             showAlert("Error", "Please select a ticket to escalate.");
@@ -162,7 +160,7 @@ public class OverviewTicket {
         if (selectedTicket != null) {
             selectedTicket.setStatus(Status.closed);  // Update status to closed
             ticketService.updateTicket(selectedTicket.getId(), selectedTicket);
-            loadTicketBaseOnRole();  // Refresh table
+            ticketTable.refresh(); // Refresh table
             showAlert("Success", "The ticket has been closed successfully.");
         } else {
             showAlert("Error", "Please select a ticket to close.");
@@ -212,8 +210,8 @@ public class OverviewTicket {
                 Stage stage = new Stage();
                 stage.setTitle("Update Ticket");
                 stage.setScene(new Scene(root));
-                stage.show();
-
+                stage.showAndWait();
+                ticketTable.refresh();
             } catch (IOException e) {
                 e.printStackTrace();
                 showAlert("Error", "Unable to load the Update Ticket screen.");
