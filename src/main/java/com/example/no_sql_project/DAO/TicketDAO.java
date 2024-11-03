@@ -206,6 +206,67 @@ public class TicketDAO extends BaseDAO {
         return null;
     }
 
+    public ArrayList<Ticket> getTicketsForCurrentUser(String employeeId) {
+        ArrayList<Ticket> tickets = new ArrayList<>();
+
+        try {
+            AggregateIterable<Document> results = collection.aggregate(Arrays.asList(
+                    new Document("$match", new Document("Employee_ID", employeeId)), // Filter by Employee_ID
+                    new Document("$lookup", new Document()
+                            .append("from", "Employees")
+                            .append("let", new Document("id", new Document("$toObjectId", "$Employee_ID")))
+                            .append("pipeline", Arrays.asList(
+                                    new Document("$match", new Document("$expr", new Document("$eq", Arrays.asList("$_id", "$$id"))))
+                            ))
+                            .append("as", "Employee")),
+                    new Document("$addFields", new Document("name", new Document("$arrayElemAt", Arrays.asList("$Employee.Name", 0))))
+            )).maxTime(60000, java.util.concurrent.TimeUnit.MILLISECONDS).allowDiskUse(true);
+
+            for (Document document : results) {
+                Ticket ticket = parseTicket(document);
+                ticket.setEmployeeName(document.getString("name"));
+                tickets.add(ticket);
+            }
+        } catch (Exception e) {
+            System.err.println("Error during aggregation for current user tickets: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return tickets;
+    }
+
+    public void updateTicketPriority(ObjectId ticketId, Priority newPriority) { //for escalation ticket priority
+        Document update = new Document("$set", new Document("Priority", newPriority.name())); // Only update Priority
+        collection.updateOne(eq("_id", ticketId), update); // Execute update based on ticket ID
+    }
+
+    public void updateTicketStatus(ObjectId ticketId, Status newStatus) { // for update ticket status
+        Document update = new Document("$set", new Document("Status", newStatus.name()));
+        collection.updateOne(eq("_id", ticketId), update);
+    }
+
+    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description) {
+        Document updateFields = new Document();
+        if (date != null) {
+            updateFields.put("Date", date.toString());  // Convert LocalDateTime to String for storage
+        }
+        if (type != null) {
+            updateFields.put("Type", type.toString());
+        }
+        if (priority != null) {
+            updateFields.put("Priority", priority.toString());
+        }
+        if (description != null && !description.isEmpty()) {
+            updateFields.put("Description", description);
+        }
+
+        // Only proceed if there is at least one field to update
+        if (!updateFields.isEmpty()) {
+            Document updateQuery = new Document("$set", updateFields);
+            collection.updateOne(eq("_id", ticketId), updateQuery);
+        }
+    }
+
     private LocalDateTime parseDate(String dateStr) {
         try {
             return LocalDateTime.parse(dateStr);

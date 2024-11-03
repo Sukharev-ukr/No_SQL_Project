@@ -1,10 +1,10 @@
 package com.example.no_sql_project.Service;
 
 import com.example.no_sql_project.DAO.TicketDAO;
-import com.example.no_sql_project.Model.Employee;
-import com.example.no_sql_project.Model.Ticket;
+import com.example.no_sql_project.Model.*;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class TicketService {
@@ -52,5 +52,20 @@ public class TicketService {
     public ArrayList<Ticket> getTicketsWithEmployeeNames() {
         ArrayList<Ticket> tickets = ticketDAO.getTicketsWithEmployeeNames();
         return tickets;
+    }
+    public ArrayList<Ticket> getTicketsForCurrentUser(String employeeId) {
+        ArrayList<Ticket> tickets = ticketDAO.getTicketsForCurrentUser(employeeId);
+        return tickets;
+    }
+
+    public void updateStatus(ObjectId ticketId, Status newStatus) {
+        ticketDAO.updateTicketStatus(ticketId, newStatus);
+    }
+
+    public void updatePriority(ObjectId ticketId, Priority newPriority) {
+        ticketDAO.updateTicketPriority(ticketId, newPriority);
+    }
+    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description) {
+        ticketDAO.updateTicketDetails(ticketId, date, type, priority, description);
     }
 }
