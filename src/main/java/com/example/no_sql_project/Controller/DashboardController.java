@@ -76,7 +76,9 @@ public class DashboardController implements Initializable {
     }
     @FXML
     public void userClick(){
-        loadFXML("/com/example/no_sql_project/UserManagement/UserManagement.fxml");
+        EmployeeManagementController controller = new EmployeeManagementController(currentUser);
+        loadFXML("/com/example/no_sql_project/UserManagement/UserManagement.fxml",controller);
+
     }
 
     @FXML
@@ -118,7 +120,7 @@ public class DashboardController implements Initializable {
     private void initializeAdmin(){
         System.out.println("logged in as admin");
         navBard.setVisible(true);
-        urgentTickets.setVisible(true);
+        pastDeadlineBox.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getAllTickets();
         ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
