@@ -122,8 +122,10 @@ public class TicketDAO extends BaseDAO {
     public void deleteTicketByID(ObjectId id) {
         deleteOne(id);
     }
+
+    
     public ArrayList<Ticket> getEmployeeTickets(String employeeID) {
-        Document filter = new Document("employeeID", employeeID);
+        Document filter = new Document("Employee_ID", employeeID);
         FindIterable<Document> employeeTickets  = findMultiple(filter);
         ArrayList<Ticket> tickets = new ArrayList<>();
         for (Document document : employeeTickets) {
