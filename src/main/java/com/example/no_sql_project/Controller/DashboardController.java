@@ -59,7 +59,7 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (admin) {
+        if (currentUser.getPrivileges().equals("Admin")  || currentUser.getPrivileges().equals("admin")) {
             initializeAdmin();
         }else{
             initializeUser();
@@ -76,7 +76,9 @@ public class DashboardController implements Initializable {
     }
     @FXML
     public void userClick(){
-        loadFXML("/com/example/no_sql_project/UserManagement/UserManagement.fxml");
+        EmployeeManagementController controller = new EmployeeManagementController(currentUser);
+        loadFXML("/com/example/no_sql_project/UserManagement/UserManagement.fxml",controller);
+
     }
 
     @FXML
@@ -89,10 +91,6 @@ public class DashboardController implements Initializable {
         try{
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(path));
         fxmlLoader.setController(controller);
-        Scene scene = new Scene(fxmlLoader.load());
-
-            EmployeeManagementController controller = new EmployeeManagementController(currentUser);
-            fxmlLoader.setController(controller);
 
             Scene scene = new Scene(fxmlLoader.load());
             Stage currentStage = (Stage) mainContainer.getScene().getWindow();
@@ -122,7 +120,7 @@ public class DashboardController implements Initializable {
     private void initializeAdmin(){
         System.out.println("logged in as admin");
         navBard.setVisible(true);
-        urgentTickets.setVisible(true);
+        pastDeadlineBox.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getAllTickets();
         ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);

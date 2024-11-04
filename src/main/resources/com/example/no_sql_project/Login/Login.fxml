@@ -16,8 +16,6 @@
                 <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <PasswordField fx:id="passwordField" text="kbhgy217" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <CheckBox fx:id="rememberMeCheckBox" text="Remember Me" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                <Hyperlink fx:id="forgotLink" text="Forgot Login Details?" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 
                 <Button fx:id="loginButton" onAction="#handleLoginButtonAction" text="Login" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
             </children>
