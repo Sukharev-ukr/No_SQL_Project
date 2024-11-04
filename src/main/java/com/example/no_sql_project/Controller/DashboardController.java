@@ -59,7 +59,7 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (admin) {
+        if (currentUser.getPrivileges().equals("Admin")  || currentUser.getPrivileges().equals("admin")) {
             initializeAdmin();
         }else{
             initializeUser();
@@ -89,10 +89,6 @@ public class DashboardController implements Initializable {
         try{
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(path));
         fxmlLoader.setController(controller);
-        Scene scene = new Scene(fxmlLoader.load());
-
-            EmployeeManagementController controller = new EmployeeManagementController(currentUser);
-            fxmlLoader.setController(controller);
 
             Scene scene = new Scene(fxmlLoader.load());
             Stage currentStage = (Stage) mainContainer.getScene().getWindow();
