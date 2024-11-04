@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -38,7 +39,10 @@ public class DashboardController implements Initializable {
     Button userButton;
     @FXML
     VBox pastDeadlineBox;
-
+    @FXML
+    private HBox navBard;
+    @FXML
+    private Button showList;
     TicketService ticketService;
 
     Employee currentUser;
@@ -67,23 +71,25 @@ public class DashboardController implements Initializable {
     }
     @FXML
     public void incidentClick(){
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("/com/example/no_sql_project/Tickets/OverviewTickets.fxml"));
             OverviewTicket controller = new OverviewTicket(currentUser);
-            fxmlLoader.setController(controller);
-
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage currentStage = (Stage) mainContainer.getScene().getWindow();
-            currentStage.setScene(scene);
-        }catch (IOException e){e.printStackTrace();}
+            loadFXML("/com/example/no_sql_project/Tickets/OverviewTickets.fxml",controller);
     }
     @FXML
     public void userClick(){
         loadFXML("/com/example/no_sql_project/UserManagement/UserManagement.fxml");
     }
-    private void loadFXML(String path){
+
+    @FXML
+    public void showListClick(){
+        OverviewTicket controller = new OverviewTicket(currentUser);
+        loadFXML("/com/example/no_sql_project/Tickets/OverviewTickets.fxml",controller);
+    }
+
+    private void loadFXML(String path, Object controller){
         try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(path));
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(path));
+        fxmlLoader.setController(controller);
+        Scene scene = new Scene(fxmlLoader.load());
 
             EmployeeManagementController controller = new EmployeeManagementController(currentUser);
             fxmlLoader.setController(controller);
@@ -93,27 +99,37 @@ public class DashboardController implements Initializable {
             currentStage.setScene(scene);
         }catch (IOException e){e.printStackTrace();}
     }
+    private void loadFXML(String path){
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource(path));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            Stage currentStage = (Stage) mainContainer.getScene().getWindow();
+            currentStage.setScene(scene);
+        }catch (IOException e){e.printStackTrace();}
+    }
 
     private void initializeUser(){
         System.out.println("logged in as user");
-        incidentButton.setVisible(true);
+        showList.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getEmployeeTickets(currentUser.getId().toString());
-        ArrayList<Ticket> openTickets = getOpenTickets(tickets);
+        ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
 
-        setOpenCloseTicketRatio(tickets, openTickets);
+        openTicketLabel.setText(MessageFormat.format("Open: {0}\nResolved: {1}\nClosed: {2}\nTotal Ticket Count: {3}",
+                ticketStates.get(0).size(),ticketStates.get(1).size(),ticketStates.get(0).size(), tickets.size()));
     }
     private void initializeAdmin(){
         System.out.println("logged in as admin");
-        incidentButton.setVisible(true);
-        userButton.setVisible(true);
-        pastDeadlineBox.setVisible(true);
+        navBard.setVisible(true);
+        urgentTickets.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getAllTickets();
-        ArrayList<Ticket> openTickets = getOpenTickets(tickets);
+        ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
 
-        setOpenCloseTicketRatio(tickets, openTickets);
-        setUrgentTicketNumber(openTickets);
+        openTicketLabel.setText(MessageFormat.format("Open: {0}\nResolved: {1}\nClosed: {2}\nTotal Ticket Count: {3}",
+                ticketStates.get(0).size(),ticketStates.get(1).size(),ticketStates.get(0).size(), tickets.size()));
+        setUrgentTicketNumber(ticketStates.get(0));
 
     }
     private void setUrgentTicketNumber(ArrayList<Ticket> openTickets){
@@ -126,16 +142,25 @@ public class DashboardController implements Initializable {
         urgentTickets.setText(String.valueOf(urgentTicketsCount));
     }
 
-    private void setOpenCloseTicketRatio(ArrayList<Ticket> tickets, ArrayList<Ticket> openTickets){
-        openTicketLabel.setText(MessageFormat.format("{0}/{1}",openTickets.size(), tickets.size()));
-    }
-    private ArrayList<Ticket> getOpenTickets(ArrayList<Ticket> tickets){
+    private ArrayList<ArrayList<Ticket>> getTicketStates(ArrayList<Ticket> tickets){
         ArrayList<Ticket> openTickets = new ArrayList<>();
+        ArrayList<Ticket> closedTickets = new ArrayList<>();
+        ArrayList<Ticket> resolvedTickets = new ArrayList<>();
         for (Ticket ticket : tickets) {
             if (ticket.getStatus() == Status.open){
                 openTickets.add(ticket);
             }
+            if (ticket.getStatus() == Status.closed){
+                closedTickets.add(ticket);
+            }
+            if (ticket.getStatus() == Status.resolved){
+
+            }
         }
-        return openTickets;
+        ArrayList<ArrayList<Ticket>> states = new ArrayList<ArrayList<Ticket>>();
+        states.add(openTickets);
+        states.add(closedTickets);
+        states.add(resolvedTickets);
+        return states;
     }
 }

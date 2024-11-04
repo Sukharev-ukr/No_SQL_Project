@@ -29,6 +29,10 @@ public class TicketService {
         ArrayList<Ticket> tickets = ticketDAO.getEmployeeTickets(employeeID);
         return tickets;
     }
+    public ArrayList<Ticket> archiveTickets(){
+       return ticketDAO.archiveTickets();
+
+    }
 
     public ArrayList<Ticket> getTicketsSortedByPriorityAscending() {
         return ticketDAO.getAllTicketsSortedByPriorityAscending();

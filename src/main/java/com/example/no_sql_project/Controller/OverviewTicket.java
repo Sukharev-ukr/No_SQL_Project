@@ -15,9 +15,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -28,8 +30,6 @@ public class OverviewTicket {
     private Button createIncidentButton;
     @FXML
     private TextField filterTextField;
-    @FXML
-    private Button deleteButton;
     @FXML
     private Button closeButton;
     @FXML
@@ -46,6 +46,8 @@ public class OverviewTicket {
     private TableColumn<Ticket, String> statusColumn;
     @FXML
     private TableColumn<Ticket, String> descriptionColumn;
+    @FXML
+    private Button archiveTicket;
     @FXML
     private TableColumn<Ticket, String> priorityColumn;
     private TicketService ticketService = new TicketService();
@@ -91,12 +93,6 @@ public class OverviewTicket {
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
         }
-        if (loggedInEmployee != null && loggedInEmployee.getRole().equals("ServiceDesk")) {
-            deleteButton.setDisable(true);
-            escalationButton.setDisable(true);
-            closeButton.setDisable(true);
-        }
-
         //loadTicketBaseOnRole();
         loadAllTickets();
         setupFilter();
@@ -134,7 +130,7 @@ public class OverviewTicket {
 
     private void loadTicketBaseOnRole() {
         ArrayList<Ticket> tickets;
-        if (loggedInEmployee.getRole().equals("ServiceDesk")) {
+        if (loggedInEmployee.getPrivileges().equals("admin")) {
             tickets = ticketService.getTicketsWithEmployeeNames();
         } else {
             tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString());
@@ -215,19 +211,28 @@ public class OverviewTicket {
     public void switchToDashboard() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
-            Parent root = fxmlLoader.load();
             DashboardController controller = new DashboardController(loggedInEmployee);
             fxmlLoader.setController(controller);
-
+            Scene scene = new Scene(fxmlLoader.load());
             // Create a new stage for the update ticket screen
-            Stage stage = new Stage();
+            Stage stage = (Stage)ticketTable.getScene().getWindow();
             stage.setTitle("Dashboard");
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Unable to load the Dashboard screen.");
         }
     }
+    @FXML
+    public void archiveOnClick(){
+        ArrayList<Ticket> tickets = ticketService.archiveTickets();
+        StringBuilder message = new StringBuilder();
+        for (Ticket ticket : tickets) {
+            message.append(MessageFormat.format("Date: {0}, Type: {1}, Description: {2}\n", ticket.getTicketDate(), ticket.getType(), ticket.getDescription()));
+        }
+        showSuccessAlert("archive Tickets",MessageFormat.format("Archived Tickets {0}\n{1}",tickets.size(),message.toString()));
+    }
+
     public void switchToUpdateTicket() {
         Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
 
@@ -260,7 +265,7 @@ public class OverviewTicket {
 
     ////////////////////////////////////////////////////////////////// Filter Ticket By UserName
     private void loadAllTickets() {
-        if ((loggedInEmployee != null && "ServiceDesk".equalsIgnoreCase(loggedInEmployee.getRole()) && "admin".equalsIgnoreCase(loggedInEmployee.getPrivileges()))) {
+        if ((loggedInEmployee != null && "ServiceDesk".equalsIgnoreCase(loggedInEmployee.getRole()) || "admin".equalsIgnoreCase(loggedInEmployee.getPrivileges()))) {
             allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
         }
         else {
