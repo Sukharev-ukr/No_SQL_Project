@@ -5,6 +5,7 @@ import com.example.no_sql_project.Model.Employee;
 import com.example.no_sql_project.Model.Priority;
 import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
+import com.example.no_sql_project.DAO.EmployeeDAO;
 import com.example.no_sql_project.Service.TicketService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class OverviewTicket {
     @FXML
@@ -52,6 +54,14 @@ public class OverviewTicket {
     private Employee loggedInEmployee;
     private ObservableList<Ticket> allTickets;
 
+    //Fred Individual Functionality
+    @FXML
+    private Button transferButton;
+    @FXML
+    private ComboBox<Employee> employeesCB;
+
+    EmployeeDAO employeeDAO = new EmployeeDAO();
+    //
 
     public OverviewTicket(Employee loggedInEmployee){
         this.loggedInEmployee = loggedInEmployee;
@@ -307,6 +317,22 @@ public class OverviewTicket {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    //Fred Individual Functionality
+    @FXML
+    private void transferTicket(){
+        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicket != null) {
+            employeesCB.setVisible(true);
+            fillComboBox();
+        }
+    }
+
+    private void fillComboBox() {
+        List<Employee> employees = employeeDAO.getAllEmployees();
+        ObservableList<Employee> observableEmployees = FXCollections.observableArrayList(employees);
+        employeesCB.setItems(observableEmployees);
     }
 }
 
