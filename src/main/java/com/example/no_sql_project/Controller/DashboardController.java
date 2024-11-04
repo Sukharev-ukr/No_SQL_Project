@@ -91,8 +91,12 @@ public class DashboardController implements Initializable {
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load());
 
-        Stage currentStage = (Stage) mainContainer.getScene().getWindow();
-        currentStage.setScene(scene);
+            EmployeeManagementController controller = new EmployeeManagementController(currentUser);
+            fxmlLoader.setController(controller);
+
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage currentStage = (Stage) mainContainer.getScene().getWindow();
+            currentStage.setScene(scene);
         }catch (IOException e){e.printStackTrace();}
     }
     private void loadFXML(String path){
