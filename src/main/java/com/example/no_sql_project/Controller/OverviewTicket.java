@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -51,6 +52,8 @@ public class OverviewTicket {
     @FXML
     private Button archiveTicket;
     @FXML
+    private  Button transferTicket;
+    @FXML
     private TableColumn<Ticket, String> priorityColumn;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
@@ -63,7 +66,6 @@ public class OverviewTicket {
     private ComboBox<Employee> employeesCB;
 
     EmployeeDAO employeeDAO = new EmployeeDAO();
-    //
 
     public OverviewTicket(Employee loggedInEmployee){
         this.loggedInEmployee = loggedInEmployee;
@@ -100,12 +102,17 @@ public class OverviewTicket {
 
         // Initialize the sort dropdown to trigger the sort event
         if (prioritySortChoiceBox != null) {
+            // Clear existing items before adding
+            prioritySortChoiceBox.getItems().clear();
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
         }
-        //loadTicketBaseOnRole();
+
+
+
         loadAllTickets();
         setupFilter();
+        fillComboBox();
     }
 
     @FXML
@@ -113,29 +120,30 @@ public class OverviewTicket {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
 
-        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+        /*if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
             // ServiceDesk can see all tickets
-            if (selectedSortOrder.equals("High to Low")) {
+            if ("High to Low".equals(selectedSortOrder)) {
                 tickets = ticketService.getTicketsSortedByPriorityDescending();
-            } else if (selectedSortOrder.equals("Low to High")) {
+            } else if ("Low to High".equals(selectedSortOrder)) {
                 tickets = ticketService.getTicketsSortedByPriorityAscending();
             } else {
                 tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
             }
         } else {
             // Regular Employee can see only their tickets
-            if (selectedSortOrder.equals("High to Low")) {
+            if ("High to Low".equals(selectedSortOrder)) {
                 tickets = ticketService.getEmployeeTicketsSortedByPriorityDescending(loggedInEmployee.getId().toString());
-            } else if (selectedSortOrder.equals("Low to High")) {
+            } else if ("Low to High".equals(selectedSortOrder)) {
                 tickets = ticketService.getEmployeeTicketsSortedByPriorityAscending(loggedInEmployee.getId().toString());
             } else {
                 tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString()); // Default unsorted
             }
-        }
+        }*/
 
         ticketTable.getItems().clear();
-        ticketTable.getItems().addAll(tickets);
+        //ticketTable.getItems().addAll(tickets);
     }
+
 
 
     private void loadTicketBaseOnRole() {
@@ -280,9 +288,13 @@ public class OverviewTicket {
         }
         else {
             allTickets = FXCollections.observableArrayList(ticketService.getTicketsForCurrentUser(loggedInEmployee.getId().toString()));
+            //escalationButton.setDisable(true);
+            //closeButton.setDisable(true);
+            //archiveTicket.setDisable(true);
+            //transferTicket.SetDisable(true)
         }
 
-       // allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
+        // allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
         ticketTable.setItems(allTickets);
     }
 
@@ -327,15 +339,40 @@ public class OverviewTicket {
     //Fred Individual Functionality
     @FXML
     private void transferTicket(){
-        Ticket selectedTicket = ticketTable.getSelectionModel().getSelectedItem();
-        if (selectedTicket != null) {
-            employeesCB.setVisible(true);
-            fillComboBox();
+        ObjectId selectedTicket = ticketTable.getSelectionModel().getSelectedItem().getId();
+        ObjectId selectedEmployee = employeesCB.getSelectionModel().getSelectedItem().getId();
+        if (selectedTicket != null && selectedEmployee != null) {
+            ticketService.updateEmployee(selectedTicket, selectedEmployee);
         }
     }
 
     private void fillComboBox() {
         List<Employee> employees = employeeDAO.getAllEmployees();
+
+        employeesCB.setCellFactory(param -> new ListCell<Employee>() {
+            @Override
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+
+        employeesCB.setButtonCell(new ListCell<Employee>() {
+            @Override
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+
         ObservableList<Employee> observableEmployees = FXCollections.observableArrayList(employees);
         employeesCB.setItems(observableEmployees);
     }
