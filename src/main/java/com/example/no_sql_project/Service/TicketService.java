@@ -82,7 +82,7 @@ public class TicketService {
     public void updatePriority(ObjectId ticketId, Priority newPriority) {
         ticketDAO.updateTicketPriority(ticketId, newPriority);
     }
-    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description) {
-        ticketDAO.updateTicketDetails(ticketId, date, type, priority, description);
+    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description, Status status) {
+        ticketDAO.updateTicketDetails(ticketId, date, type, priority, description, status);
     }
 }

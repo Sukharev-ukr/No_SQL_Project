@@ -260,7 +260,7 @@ public class TicketDAO extends BaseDAO {
     }
 
 
-    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description) {
+    public void updateTicketDetails(ObjectId ticketId, LocalDateTime date, Type type, Priority priority, String description, Status status) {
         Document updateFields = new Document();
         if (date != null) {
             updateFields.put("Date", date.toString());  // Convert LocalDateTime to String for storage
@@ -273,6 +273,9 @@ public class TicketDAO extends BaseDAO {
         }
         if (description != null && !description.isEmpty()) {
             updateFields.put("Description", description);
+        }
+        if (status != null) {
+            updateFields.put("Status", status.toString());
         }
 
         // Only proceed if there is at least one field to update

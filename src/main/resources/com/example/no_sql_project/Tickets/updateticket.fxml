@@ -17,17 +17,20 @@
                 <Label text="Type of incident:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <ComboBox fx:id="incidentTypeComboBox" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                <ComboBox fx:id="priorityComboBox" promptText="Select priority" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label text="Priority:" GridPane.rowIndex="4" />
+                <ComboBox fx:id="priorityComboBox" promptText="Select priority" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                <TextArea fx:id="descriptionArea" prefHeight="100" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label text="Description:" GridPane.rowIndex="5" />
+                <TextArea fx:id="descriptionArea" prefHeight="100" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Status:" GridPane.rowIndex="3" />
+            <ComboBox fx:id="statusCombobox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </children>
          <columnConstraints>
             <ColumnConstraints />
             <ColumnConstraints />
          </columnConstraints>
          <rowConstraints>
+            <RowConstraints />
             <RowConstraints />
             <RowConstraints />
             <RowConstraints />
