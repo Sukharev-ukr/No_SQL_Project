@@ -55,6 +55,8 @@ public class OverviewTicket {
     @FXML
     private  Button transferTicket;
     @FXML
+    private Button userButton;
+    @FXML
     private TableColumn<Ticket, String> priorityColumn;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
@@ -222,6 +224,28 @@ public class OverviewTicket {
     }
 
     @FXML
+    private void switchToUserManagement() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/UserManagement/UserManagement.fxml"));
+            EmployeeManagementController userManagementController = new EmployeeManagementController(loggedInEmployee);
+            fxmlLoader.setController(userManagementController);
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("User Management");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Close the current stage (OverviewTicket)
+            Stage currentStage = (Stage) ticketTable.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the Create Incident screen.");
+        }
+    }
+
+    @FXML
     public void switchToDashboard() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
@@ -284,10 +308,12 @@ public class OverviewTicket {
         }
         else {
             allTickets = FXCollections.observableArrayList(ticketService.getTicketsForCurrentUser(loggedInEmployee.getId().toString()));
-            //escalationButton.setDisable(true);
-            //closeButton.setDisable(true);
-            //archiveTicket.setDisable(true);
-            //transferTicket.SetDisable(true)
+            escalationButton.setDisable(true);
+            closeButton.setDisable(true);
+            archiveTicket.setDisable(true);
+            transferTicket.setDisable(true);
+            userButton.setDisable(true);
+            employeesCB.setDisable(true);
         }
 
         // allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());

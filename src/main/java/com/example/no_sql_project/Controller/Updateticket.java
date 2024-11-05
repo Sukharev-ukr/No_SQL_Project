@@ -1,10 +1,7 @@
 package com.example.no_sql_project.Controller;
 
 import com.example.no_sql_project.DAO.EmployeeDAO;
-import com.example.no_sql_project.Model.Employee;
-import com.example.no_sql_project.Model.Priority;
-import com.example.no_sql_project.Model.Ticket;
-import com.example.no_sql_project.Model.Type;
+import com.example.no_sql_project.Model.*;
 import com.example.no_sql_project.Service.TicketService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -36,6 +33,9 @@ public class Updateticket {
     private Button cancelButton;
 
     @FXML
+    private ComboBox<Status> statusCombobox;
+
+    @FXML
     private Button updateTicketButton;
 
     private TicketService ticketService = new TicketService();
@@ -56,6 +56,7 @@ public class Updateticket {
     public void initialize() {
         incidentTypeComboBox.getItems().addAll(Type.values());
         priorityComboBox.getItems().addAll(Priority.values());
+        statusCombobox.getItems().addAll(Status.values());
         loadEmployees();
     }
 
@@ -85,7 +86,7 @@ public class Updateticket {
     private boolean validateInputs() {
         return datePickerReported.getValue() != null &&
                 incidentTypeComboBox.getValue() != null &&
-               // reportedByComboBox.getValue() != null &&
+                statusCombobox.getValue() != null &&
                 priorityComboBox.getValue() != null &&
                 !descriptionArea.getText().isEmpty();
     }
@@ -95,6 +96,7 @@ public class Updateticket {
         if (validateInputs()) {
             LocalDateTime ticketDate = datePickerReported.getValue().atStartOfDay();
             Priority priority = priorityComboBox.getValue();
+            Status status = statusCombobox.getValue();
             Type type = incidentTypeComboBox.getValue();
             String description = descriptionArea.getText();
             //String selectedUser = reportedByComboBox.getValue();
@@ -105,10 +107,11 @@ public class Updateticket {
             currentTicket.setPriority(priority);
             currentTicket.setType(type);
             currentTicket.setDescription(description);
+            currentTicket.setStatus(status);
             currentTicket.setEmployeeId(loggedInUser.getId().toHexString());
 
             //ticketService.updateTicket(currentTicket.getId(), currentTicket);
-            ticketService.updateTicketDetails(currentTicket.getId(), ticketDate, type, priority, description);
+            ticketService.updateTicketDetails(currentTicket.getId(), ticketDate, type, priority, description, status);
             showSuccessAlert("Ticket Updated", "Ticket has been updated successfully.");
             closeWindow();
         } else {

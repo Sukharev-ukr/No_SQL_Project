@@ -9,13 +9,14 @@
 <VBox fx:id="ticketsPane" alignment="TOP_CENTER" prefHeight="648.0" prefWidth="780.0" spacing="20" stylesheets="@overviewtickets.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label id="overviewTitle" prefHeight="41.0" prefWidth="191.0" text="Overview Tickets" />
-      <HBox prefHeight="139.0" prefWidth="780.0">
+      <HBox prefHeight="139.0" prefWidth="780.0" spacing="20.0">
           <children>
             <Button lineSpacing="20.0" mnemonicParsing="false" onAction="#switchToDashboard" prefHeight="51.0" prefWidth="142.0" text="Dashboard">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
+            <Button fx:id="userButton" mnemonicParsing="false" onAction="#switchToUserManagement" prefHeight="50.0" prefWidth="131.0" text="User Management" />
           </children>
       </HBox>
 
@@ -39,7 +40,6 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <Button onAction="#handleSortTickets" text="Sort" />
             </children>
         </HBox>
 
@@ -60,7 +60,7 @@
             <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseTicket" prefHeight="48.0" prefWidth="110.0" text="Close Ticket" />
             <Button fx:id="updateButon" mnemonicParsing="false" onAction="#switchToUpdateTicket" prefHeight="49.0" prefWidth="110.0" text="Update Ticket" />
             <Button fx:id="archiveTicket" lineSpacing="100.0" mnemonicParsing="false" onMouseClicked="#archiveOnClick" prefHeight="49.0" prefWidth="110.0" text="Archive Tickets" />
-            <Button mnemonicParsing="false" onAction="#transferTicket" prefHeight="48.0" text="Transfer ticket to -&gt;" />
+            <Button fx:id="transferTicket" mnemonicParsing="false" onAction="#transferTicket" prefHeight="48.0" text="Transfer ticket to -&gt;" />
             <ComboBox fx:id="employeesCB" prefWidth="150.0" promptText="Choose employee" />
          </children>
       </HBox>
