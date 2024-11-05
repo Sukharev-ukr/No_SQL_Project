@@ -121,7 +121,7 @@ public class OverviewTicket {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
 
-        /*if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
             // ServiceDesk can see all tickets
             if ("High to Low".equals(selectedSortOrder)) {
                 tickets = ticketService.getTicketsSortedByPriorityDescending();
@@ -139,10 +139,10 @@ public class OverviewTicket {
             } else {
                 tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString()); // Default unsorted
             }
-        }*/
+        }
 
         ticketTable.getItems().clear();
-        //ticketTable.getItems().addAll(tickets);
+        ticketTable.getItems().addAll(tickets);
     }
 
 
