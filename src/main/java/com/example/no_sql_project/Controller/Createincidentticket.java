@@ -23,9 +23,6 @@ public class Createincidentticket {
     @FXML
     private ComboBox<Type> incidentTypeComboBox;
 
-   // @FXML
-   // private TextField reportedUser;
-
     @FXML
     private ComboBox<Priority> priorityComboBox;
 
@@ -95,7 +92,7 @@ public class Createincidentticket {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    public void handleCancel() {
+    /*public void handleCancel() {
         clearFormFields();
 
         try {
@@ -113,7 +110,7 @@ public class Createincidentticket {
             e.printStackTrace();
             showAlert("Error", "Unable to load the Overview Ticket screen.");
         }
-    }
+    }*/
     private void switchToTicketOverview() {
         try {
             // Load the TicketOverview scene
@@ -154,5 +151,10 @@ public class Createincidentticket {
     private void closeWindow() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML
+    private void handleCancel() {
+        closeWindow();
     }
 }

@@ -37,6 +37,8 @@ public class EmployeeManagementController {
     private Button btnDeleteUser;
     @FXML
     private Button btnUpdateUser;
+    @FXML
+    private Button incidentButton;
 
     private Employee loggedInEmployee;
 
@@ -46,6 +48,7 @@ public class EmployeeManagementController {
     public EmployeeManagementController(Employee loggedInEmployee){
         this.loggedInEmployee = loggedInEmployee;
     }
+
 
     public void initialize() {
         configureTableColumns();
@@ -68,6 +71,28 @@ public class EmployeeManagementController {
     private void loadUsers() {
         ObservableList<Employee> showingObservableList = FXCollections.observableArrayList(employeeDAO.getAllEmployees());
         userTable.setItems(showingObservableList);
+    }
+
+    @FXML
+    private void switchToIncidentManagement() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Tickets/OverviewTickets.fxml"));
+           OverviewTicket overviewTicket = new OverviewTicket(loggedInEmployee);
+            fxmlLoader.setController(overviewTicket);
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Incident Management");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Close the current stage (OverviewTicket)
+            Stage currentStage = (Stage) userTable.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Unable to load the Create Incident screen.");
+        }
     }
 
     @FXML
@@ -162,6 +187,12 @@ public class EmployeeManagementController {
         }
     }
 
-
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 }
