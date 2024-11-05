@@ -59,16 +59,14 @@ public class Createincidentticket {
     }
 
     private boolean validateInputs() {
-        return datePickerReported.getValue() != null &&
-                incidentTypeComboBox.getValue() != null &&
-                //reportedUser.get != null &&
+        return incidentTypeComboBox.getValue() != null &&
                 priorityComboBox.getValue() != null &&
                 !descriptionArea.getText().isEmpty();
     }
 
     public void handleSubmitTicket() {
         if (validateInputs()) {
-            LocalDateTime ticketDate = datePickerReported.getValue().atStartOfDay();
+            LocalDateTime ticketDate = LocalDateTime.now();
             Priority priority = priorityComboBox.getValue();
             Type type = incidentTypeComboBox.getValue();
             String description = descriptionArea.getText();

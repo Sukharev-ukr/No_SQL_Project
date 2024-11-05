@@ -6,13 +6,11 @@
 <VBox alignment="TOP_CENTER" spacing="15" stylesheets="@createincidentticket.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.no_sql_project.Controller.Createincidentticket">
     <children>
         <!-- Title Label -->
-        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Create new incident ticket" />
+        <Label prefHeight="43.0" prefWidth="294.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Create new incident ticket" />
 
         <!-- Form Fields Grid -->
-        <GridPane alignment="CENTER" hgap="10" vgap="15">
+        <GridPane alignment="CENTER" hgap="10" prefHeight="272.0" prefWidth="338.0" vgap="15">
             <children>
-                <Label text="Date/time reported:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <DatePicker fx:id="datePickerReported" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                 <Label text="Type of incident:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <ComboBox fx:id="incidentTypeComboBox" promptText="Select type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -29,8 +27,8 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
+            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+            <RowConstraints maxHeight="25.599999999999994" minHeight="25.599999999999994" prefHeight="25.599999999999994" />
             <RowConstraints />
             <RowConstraints />
             <RowConstraints />
