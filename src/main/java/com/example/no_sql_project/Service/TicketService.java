@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class TicketService {
     private TicketDAO ticketDAO;
@@ -35,19 +36,27 @@ public class TicketService {
     }
 
     public ArrayList<Ticket> getTicketsSortedByPriorityAscending() {
-        return ticketDAO.getAllTicketsSortedByPriorityAscending();
+        ArrayList<Ticket> tickets = getTicketsWithEmployeeNames();
+        tickets.sort(Comparator.comparing(Ticket::getPriority));
+        return tickets;
     }
 
     public ArrayList<Ticket> getTicketsSortedByPriorityDescending() {
-        return ticketDAO.getAllTicketsSortedByPriorityDescending();
+        ArrayList<Ticket> tickets = getTicketsWithEmployeeNames();
+        tickets.sort((t1, t2) -> t2.getPriority().compareTo(t1.getPriority()));
+        return tickets;
     }
     public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityAscending(String employeeID) {
-        return ticketDAO.getEmployeeTicketsSortedByPriorityAscending(employeeID);
+        ArrayList<Ticket> tickets = ticketDAO.getEmployeeTickets(employeeID);
+        tickets.sort((t1, t2) -> Priority.comparePriority(t1.getPriority(), t2.getPriority()));
+        return tickets;
     }
 
     public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityDescending(String employeeID) {
-        return ticketDAO.getEmployeeTicketsSortedByPriorityDescending(employeeID);
-    }*/
+        ArrayList<Ticket> tickets = ticketDAO.getEmployeeTickets(employeeID);
+        tickets.sort((t1, t2) -> Priority.comparePriority(t2.getPriority(), t1.getPriority()));
+        return tickets;
+    }
 
 
     public ArrayList<Ticket> getOpenTickets() {

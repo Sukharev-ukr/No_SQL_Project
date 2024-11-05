@@ -121,28 +121,23 @@ public class OverviewTicket {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
 
-        /*if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
-            // ServiceDesk can see all tickets
-            if ("High to Low".equals(selectedSortOrder)) {
-                tickets = ticketService.getTicketsSortedByPriorityDescending();
-            } else if ("Low to High".equals(selectedSortOrder)) {
-                tickets = ticketService.getTicketsSortedByPriorityAscending();
-            } else {
-                tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
-            }
+        // Get the sorted tickets based on selected sort order
+        if ("High to Low".equals(selectedSortOrder)) {
+            tickets = ticketService.getTicketsSortedByPriorityDescending();
+        } else if ("Low to High".equals(selectedSortOrder)) {
+            tickets = ticketService.getTicketsSortedByPriorityAscending();
         } else {
-            // Regular Employee can see only their tickets
-            if ("High to Low".equals(selectedSortOrder)) {
-                tickets = ticketService.getEmployeeTicketsSortedByPriorityDescending(loggedInEmployee.getId().toString());
-            } else if ("Low to High".equals(selectedSortOrder)) {
-                tickets = ticketService.getEmployeeTicketsSortedByPriorityAscending(loggedInEmployee.getId().toString());
-            } else {
-                tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString()); // Default unsorted
-            }
-        }*/
+            tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
+        }
 
-        ticketTable.getItems().clear();
-        //ticketTable.getItems().addAll(tickets);
+        // Create a new ObservableList from the sorted list
+        ObservableList<Ticket> sortedTickets = FXCollections.observableArrayList(tickets);
+
+        // Set the sorted list to the TableView
+        ticketTable.setItems(sortedTickets);
+
+        // Refresh the TableView to reflect the updated data
+        ticketTable.refresh();
     }
 
 
