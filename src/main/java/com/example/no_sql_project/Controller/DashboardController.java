@@ -112,10 +112,10 @@ public class DashboardController implements Initializable {
         showList.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getEmployeeTickets(currentUser.getId().toString());
-        ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
+        /*ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
 
         openTicketLabel.setText(MessageFormat.format("Open: {0}\nResolved: {1}\nClosed: {2}\nTotal Ticket Count: {3}",
-                ticketStates.get(0).size(),ticketStates.get(1).size(),ticketStates.get(0).size(), tickets.size()));
+                ticketStates.get(0).size(),ticketStates.get(1).size(),ticketStates.get(0).size(), tickets.size()));*/
     }
     private void initializeAdmin(){
         System.out.println("logged in as admin");
@@ -123,11 +123,11 @@ public class DashboardController implements Initializable {
         pastDeadlineBox.setVisible(true);
 
         ArrayList<Ticket> tickets =  ticketService.getAllTickets();
-        ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
+        /*ArrayList<ArrayList<Ticket>> ticketStates = getTicketStates(tickets);
 
         openTicketLabel.setText(MessageFormat.format("Open: {0}\nResolved: {1}\nClosed: {2}\nTotal Ticket Count: {3}",
                 ticketStates.get(0).size(),ticketStates.get(1).size(),ticketStates.get(0).size(), tickets.size()));
-        setUrgentTicketNumber(ticketStates.get(0));
+        setUrgentTicketNumber(ticketStates.get(0));*/
 
     }
     private void setUrgentTicketNumber(ArrayList<Ticket> openTickets){
@@ -140,7 +140,7 @@ public class DashboardController implements Initializable {
         urgentTickets.setText(String.valueOf(urgentTicketsCount));
     }
 
-    private ArrayList<ArrayList<Ticket>> getTicketStates(ArrayList<Ticket> tickets){
+    /*private ArrayList<ArrayList<Ticket>> getTicketStates(ArrayList<Ticket> tickets){
         ArrayList<Ticket> openTickets = new ArrayList<>();
         ArrayList<Ticket> closedTickets = new ArrayList<>();
         ArrayList<Ticket> resolvedTickets = new ArrayList<>();
@@ -160,5 +160,5 @@ public class DashboardController implements Initializable {
         states.add(closedTickets);
         states.add(resolvedTickets);
         return states;
-    }
+    }*/
 }

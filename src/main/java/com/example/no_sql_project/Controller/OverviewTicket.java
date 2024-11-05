@@ -5,6 +5,7 @@ import com.example.no_sql_project.Model.Employee;
 import com.example.no_sql_project.Model.Priority;
 import com.example.no_sql_project.Model.Status;
 import com.example.no_sql_project.Model.Ticket;
+import com.example.no_sql_project.DAO.EmployeeDAO;
 import com.example.no_sql_project.Service.TicketService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -17,11 +18,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class OverviewTicket {
     @FXML
@@ -49,11 +53,20 @@ public class OverviewTicket {
     @FXML
     private Button archiveTicket;
     @FXML
+    private  Button transferTicket;
+    @FXML
     private TableColumn<Ticket, String> priorityColumn;
     private TicketService ticketService = new TicketService();
     private Employee loggedInEmployee;
     private ObservableList<Ticket> allTickets;
 
+    //Fred Individual Functionality
+    @FXML
+    private Button transferButton;
+    @FXML
+    private ComboBox<Employee> employeesCB;
+
+    EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public OverviewTicket(Employee loggedInEmployee){
         this.loggedInEmployee = loggedInEmployee;
@@ -90,12 +103,17 @@ public class OverviewTicket {
 
         // Initialize the sort dropdown to trigger the sort event
         if (prioritySortChoiceBox != null) {
+            // Clear existing items before adding
+            prioritySortChoiceBox.getItems().clear();
             prioritySortChoiceBox.getItems().addAll("High to Low", "Low to High");
             prioritySortChoiceBox.setOnAction(event -> handleSortTickets());
         }
-        //loadTicketBaseOnRole();
+
+
+
         loadAllTickets();
         setupFilter();
+        fillComboBox();
     }
 
     @FXML
@@ -103,29 +121,30 @@ public class OverviewTicket {
         String selectedSortOrder = prioritySortChoiceBox.getValue();
         ArrayList<Ticket> tickets;
 
-        if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
+        /*if (loggedInEmployee.getRole().equalsIgnoreCase("ServiceDesk")) {
             // ServiceDesk can see all tickets
-            if (selectedSortOrder.equals("High to Low")) {
+            if ("High to Low".equals(selectedSortOrder)) {
                 tickets = ticketService.getTicketsSortedByPriorityDescending();
-            } else if (selectedSortOrder.equals("Low to High")) {
+            } else if ("Low to High".equals(selectedSortOrder)) {
                 tickets = ticketService.getTicketsSortedByPriorityAscending();
             } else {
                 tickets = ticketService.getTicketsWithEmployeeNames(); // Default unsorted
             }
         } else {
             // Regular Employee can see only their tickets
-            if (selectedSortOrder.equals("High to Low")) {
+            if ("High to Low".equals(selectedSortOrder)) {
                 tickets = ticketService.getEmployeeTicketsSortedByPriorityDescending(loggedInEmployee.getId().toString());
-            } else if (selectedSortOrder.equals("Low to High")) {
+            } else if ("Low to High".equals(selectedSortOrder)) {
                 tickets = ticketService.getEmployeeTicketsSortedByPriorityAscending(loggedInEmployee.getId().toString());
             } else {
                 tickets = ticketService.getEmployeeTickets(loggedInEmployee.getId().toString()); // Default unsorted
             }
-        }
+        }*/
 
         ticketTable.getItems().clear();
-        ticketTable.getItems().addAll(tickets);
+        //ticketTable.getItems().addAll(tickets);
     }
+
 
 
     private void loadTicketBaseOnRole() {
@@ -270,9 +289,13 @@ public class OverviewTicket {
         }
         else {
             allTickets = FXCollections.observableArrayList(ticketService.getTicketsForCurrentUser(loggedInEmployee.getId().toString()));
+            //escalationButton.setDisable(true);
+            //closeButton.setDisable(true);
+            //archiveTicket.setDisable(true);
+            //transferTicket.SetDisable(true)
         }
 
-       // allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
+        // allTickets = FXCollections.observableArrayList(ticketService.getTicketsWithEmployeeNames());
         ticketTable.setItems(allTickets);
     }
 
@@ -309,6 +332,91 @@ public class OverviewTicket {
     private void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    //Fred Individual Functionality
+    @FXML
+    private void transferTicket(){
+
+        // Ensure a ticket is selected
+        Ticket selectedTicketObject = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicketObject == null) {
+            showAlert("Please select a ticket to transfer.");
+            return;
+        }
+        ObjectId selectedTicketId = selectedTicketObject.getId();  // Assumes getId() returns ObjectId
+
+        // Ensure an employee is selected
+        Employee selectedEmployeeObject = employeesCB.getSelectionModel().getSelectedItem();
+        if (selectedEmployeeObject == null) {
+            showAlert("Please select an employee to transfer the ticket to.");
+            return;
+        }
+        String selectedEmployeeId = selectedEmployeeObject.getId().toString();  // Assumes getId() returns String directly
+
+        // Proceed if both ticket and employee are selected
+        if (selectedTicketId != null && selectedEmployeeId != null && !selectedEmployeeId.isEmpty()) {
+            boolean confirmed = showTransferConfirmationDialog();
+            if (confirmed) {
+                ticketService.updateEmployee(selectedTicketId, selectedEmployeeId);
+                loadAllTickets();
+            }
+        } else {
+            showAlert("Invalid ticket or employee selection.");
+        }
+
+    }
+
+    private void fillComboBox() {
+        List<Employee> employees = employeeDAO.getAllEmployees();
+
+        employeesCB.setCellFactory(param -> new ListCell<Employee>() {
+            @Override
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+
+        employeesCB.setButtonCell(new ListCell<Employee>() {
+            @Override
+            protected void updateItem(Employee item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+
+        ObservableList<Employee> observableEmployees = FXCollections.observableArrayList(employees);
+        employeesCB.setItems(observableEmployees);
+    }
+
+    public boolean showTransferConfirmationDialog() {
+        //Create a confirmation alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Transfer Confirmation");
+        alert.setHeaderText("Are you sure you want to transfer this ticket?");
+
+        //Display the alert and wait for response
+        Optional<ButtonType> result = alert.showAndWait();
+
+        //Check user click
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

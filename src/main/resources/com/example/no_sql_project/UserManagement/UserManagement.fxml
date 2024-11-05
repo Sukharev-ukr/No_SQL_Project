@@ -8,9 +8,7 @@
     <!-- Navigation Bar -->
     <HBox alignment="CENTER" spacing="20" styleClass="nav-bar">
         <children>
-            <Button styleClass="nav-button" text="Dashboard" />
-            <Button styleClass="nav-button" text="Incident Management" />
-            <Button styleClass="nav-button" text="User Management" />
+            <Button onAction="#switchToDashboard" styleClass="nav-button" text="Dashboard" />
         </children>
     </HBox>
 
