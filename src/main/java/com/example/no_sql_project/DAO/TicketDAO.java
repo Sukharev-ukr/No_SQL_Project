@@ -68,9 +68,8 @@ public class TicketDAO extends BaseDAO {
     public ArrayList<Ticket> getAllTickets() {
         FindIterable<Document> ticketCollection = getAll();
         ArrayList<Ticket> tickets = new ArrayList<>();
-        for (Document document : ticketCollection) {
-            tickets.add(parseTicket(document));
-        }
+        tickets = parseTicketList(ticketCollection);
+
         return tickets;
     }
     public ArrayList<Ticket> getAllTicketsSortedByPriorityAscending() {
@@ -114,7 +113,10 @@ public class TicketDAO extends BaseDAO {
     private ArrayList<Ticket> parseTicketList(FindIterable<Document> ticketCollection) {
         ArrayList<Ticket> tickets = new ArrayList<>();
         for (Document document : ticketCollection) {
-            tickets.add(parseTicket(document));
+            if (parseTicket(document) != null){
+                tickets.add(parseTicket(document));
+            }
+
         }
         return tickets;
     }
@@ -137,14 +139,13 @@ public class TicketDAO extends BaseDAO {
     public void updateTicket(ObjectId id,Ticket ticket) {
         updateOneEntry(id, parseDocument(ticket));
     }
+
     public ArrayList<Ticket> getOpenTickets() {
         Document filter = new Document("status", Status.open.toString());
         FindIterable<Document> ticketCollection = findMultiple(filter);
 
         ArrayList<Ticket> tickets = new ArrayList<>();
-        for (Document document : ticketCollection) {
-            tickets.add(parseTicket(document));
-        }
+        tickets = parseTicketList(ticketCollection);
         return tickets;
     }
 
@@ -200,8 +201,10 @@ public class TicketDAO extends BaseDAO {
 
             for (Document document : results) {
                 Ticket ticket = parseTicket(document);
-                ticket.setEmployeeName(document.getString("name"));
-                tickets.add(ticket);
+                if (ticket != null){
+                    ticket.setEmployeeName(document.getString("name"));
+                    tickets.add(ticket);
+                }
             }
             return tickets;
         } catch (Exception e) {

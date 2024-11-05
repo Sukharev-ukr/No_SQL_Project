@@ -145,6 +145,7 @@ public class DashboardController implements Initializable {
         ArrayList<Ticket> closedTickets = new ArrayList<>();
         ArrayList<Ticket> resolvedTickets = new ArrayList<>();
         for (Ticket ticket : tickets) {
+            if (ticket == null){System.out.println(ticket);}
             if (ticket.getStatus() == Status.open){
                 openTickets.add(ticket);
             }

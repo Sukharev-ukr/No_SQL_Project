@@ -230,7 +230,7 @@ public class OverviewTicket {
         for (Ticket ticket : tickets) {
             message.append(MessageFormat.format("Date: {0}, Type: {1}, Description: {2}\n", ticket.getTicketDate(), ticket.getType(), ticket.getDescription()));
         }
-        showSuccessAlert("archive Tickets",MessageFormat.format("Archived Tickets {0}\n{1}",tickets.size(),message.toString()));
+        showSuccessAlert("archive Tickets",MessageFormat.format("Archiving 2 year old tickets\n Amount of Tickets: {0}\n{1}",tickets.size(),message.toString()));
     }
 
     public void switchToUpdateTicket() {
