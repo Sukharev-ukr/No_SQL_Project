@@ -146,6 +146,21 @@ public class EmployeeManagementController {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    @FXML
+    public void switchToDashboard() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/no_sql_project/Dashboard/Dashboard.fxml"));
+            DashboardController controller = new DashboardController(loggedInEmployee);
+            fxmlLoader.setController(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            // Create a new stage for the update ticket screen
+            Stage stage = (Stage)userTable.getScene().getWindow();
+            stage.setTitle("Dashboard");
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

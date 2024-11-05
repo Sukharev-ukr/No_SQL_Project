@@ -47,7 +47,7 @@ public class TicketService {
 
     public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityDescending(String employeeID) {
         return ticketDAO.getEmployeeTicketsSortedByPriorityDescending(employeeID);
-    }
+    }*/
 
 
     public ArrayList<Ticket> getOpenTickets() {
@@ -64,6 +64,10 @@ public class TicketService {
 
     public void updateStatus(ObjectId ticketId, Status newStatus) {
         ticketDAO.updateTicketStatus(ticketId, newStatus);
+    }
+
+    public void updateEmployee(ObjectId ticketId, String newEmployeeId) {
+        ticketDAO.updateEmployeeTicket(ticketId, newEmployeeId);
     }
 
     public void updatePriority(ObjectId ticketId, Priority newPriority) {
