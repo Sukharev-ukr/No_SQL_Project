@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class TicketService {
     private TicketDAO ticketDAO;
@@ -35,14 +36,14 @@ public class TicketService {
     }
 
     public ArrayList<Ticket> getTicketsSortedByPriorityAscending() {
-        ArrayList<Ticket> tickets = ticketDAO.getAllTickets();
-        tickets.sort((t1, t2) -> Priority.comparePriority(t1.getPriority(), t2.getPriority()));
+        ArrayList<Ticket> tickets = getTicketsWithEmployeeNames();
+        tickets.sort(Comparator.comparing(Ticket::getPriority));
         return tickets;
     }
 
     public ArrayList<Ticket> getTicketsSortedByPriorityDescending() {
-        ArrayList<Ticket> tickets = ticketDAO.getAllTickets();
-        tickets.sort((t1, t2) -> Priority.comparePriority(t2.getPriority(), t1.getPriority()));
+        ArrayList<Ticket> tickets = getTicketsWithEmployeeNames();
+        tickets.sort((t1, t2) -> t2.getPriority().compareTo(t1.getPriority()));
         return tickets;
     }
     public ArrayList<Ticket> getEmployeeTicketsSortedByPriorityAscending(String employeeID) {
