@@ -56,10 +56,12 @@
         </TableView>
       <HBox prefHeight="141.0" prefWidth="714.0" spacing="15.0">
          <children>
-            <Button fx:id="escalationButton" mnemonicParsing="false" onAction="#handleEscalateTicket" prefHeight="46.0" prefWidth="131.0" text="Escalation Ticket" />
-            <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseTicket" prefHeight="48.0" prefWidth="151.0" text="Close Ticket" />
-            <Button fx:id="updateButon" mnemonicParsing="false" onAction="#switchToUpdateTicket" prefHeight="49.0" prefWidth="149.0" text="Update Ticket" />
-            <Button fx:id="archiveTicket" lineSpacing="100.0" onMouseClicked="#archiveOnClick" mnemonicParsing="false" prefHeight="49.0" prefWidth="123.0" text="Archive Tickets" />
+            <Button fx:id="escalationButton" mnemonicParsing="false" onAction="#handleEscalateTicket" prefHeight="46.0" prefWidth="110.0" text="Escalation Ticket" />
+            <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseTicket" prefHeight="48.0" prefWidth="110.0" text="Close Ticket" />
+            <Button fx:id="updateButon" mnemonicParsing="false" onAction="#switchToUpdateTicket" prefHeight="49.0" prefWidth="110.0" text="Update Ticket" />
+            <Button fx:id="archiveTicket" lineSpacing="100.0" mnemonicParsing="false" onMouseClicked="#archiveOnClick" prefHeight="49.0" prefWidth="110.0" text="Archive Tickets" />
+            <Button mnemonicParsing="false" onAction="#transferTicket" prefHeight="48.0" text="Transfer ticket to -&gt;" />
+            <ComboBox fx:id="employeesCB" prefWidth="150.0" promptText="Choose employee" />
          </children>
       </HBox>
     </children>

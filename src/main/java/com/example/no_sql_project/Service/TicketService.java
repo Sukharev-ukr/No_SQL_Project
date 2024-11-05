@@ -66,7 +66,7 @@ public class TicketService {
         ticketDAO.updateTicketStatus(ticketId, newStatus);
     }
 
-    public void updateEmployee(ObjectId ticketId, ObjectId newEmployeeId) {
+    public void updateEmployee(ObjectId ticketId, String newEmployeeId) {
         ticketDAO.updateEmployeeTicket(ticketId, newEmployeeId);
     }
 

@@ -249,7 +249,7 @@ public class TicketDAO extends BaseDAO {
         collection.updateOne(eq("_id", ticketId), update);
     }
 
-    public void updateEmployeeTicket(ObjectId ticketId, ObjectId newEmployeeid) { // for update ticket employee
+    public void updateEmployeeTicket(ObjectId ticketId, String newEmployeeid) { // for update ticket employee
         Document update = new Document("$set", new Document("Employee_ID", newEmployeeid));
         collection.updateOne(eq("_id", ticketId), update);
     }

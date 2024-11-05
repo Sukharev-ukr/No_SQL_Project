@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OverviewTicket {
     @FXML
@@ -339,11 +340,34 @@ public class OverviewTicket {
     //Fred Individual Functionality
     @FXML
     private void transferTicket(){
-        ObjectId selectedTicket = ticketTable.getSelectionModel().getSelectedItem().getId();
-        ObjectId selectedEmployee = employeesCB.getSelectionModel().getSelectedItem().getId();
-        if (selectedTicket != null && selectedEmployee != null) {
-            ticketService.updateEmployee(selectedTicket, selectedEmployee);
+
+        // Ensure a ticket is selected
+        Ticket selectedTicketObject = ticketTable.getSelectionModel().getSelectedItem();
+        if (selectedTicketObject == null) {
+            showAlert("Please select a ticket to transfer.");
+            return;
         }
+        ObjectId selectedTicketId = selectedTicketObject.getId();  // Assumes getId() returns ObjectId
+
+        // Ensure an employee is selected
+        Employee selectedEmployeeObject = employeesCB.getSelectionModel().getSelectedItem();
+        if (selectedEmployeeObject == null) {
+            showAlert("Please select an employee to transfer the ticket to.");
+            return;
+        }
+        String selectedEmployeeId = selectedEmployeeObject.getId().toString();  // Assumes getId() returns String directly
+
+        // Proceed if both ticket and employee are selected
+        if (selectedTicketId != null && selectedEmployeeId != null && !selectedEmployeeId.isEmpty()) {
+            boolean confirmed = showTransferConfirmationDialog();
+            if (confirmed) {
+                ticketService.updateEmployee(selectedTicketId, selectedEmployeeId);
+                loadAllTickets();
+            }
+        } else {
+            showAlert("Invalid ticket or employee selection.");
+        }
+
     }
 
     private void fillComboBox() {
@@ -375,6 +399,27 @@ public class OverviewTicket {
 
         ObservableList<Employee> observableEmployees = FXCollections.observableArrayList(employees);
         employeesCB.setItems(observableEmployees);
+    }
+
+    public boolean showTransferConfirmationDialog() {
+        //Create a confirmation alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Transfer Confirmation");
+        alert.setHeaderText("Are you sure you want to transfer this ticket?");
+
+        //Display the alert and wait for response
+        Optional<ButtonType> result = alert.showAndWait();
+
+        //Check user click
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
 
